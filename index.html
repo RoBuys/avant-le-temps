@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avant le temps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Plan : un journal de physique, sombre et sobre. Colonne de texte et d'équations à gauche, figures calculées à droite.
+   Une seule scène forte : le wireframe de la géométrie sans frontière dans l'en-tête. Le reste reste calme. */
+:root{
+  --bg:#080a11; --panel:#0e121c; --panel2:#121828; --line:#1d2436; --line2:#2a3350;
+  --text:#e7e9f1; --mute:#8b93ad;
+  --blue:#6db3ff; --amber:#ffb45a; --rose:#ff7a98;
+  --f-display:'Instrument Serif',Georgia,serif;
+  --f-body:'Hanken Grotesk',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:17px;line-height:1.65;-webkit-text-size-adjust:100%}
+a{color:var(--blue);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:3px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance}
+p{margin:0 0 16px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.mute{color:var(--mute)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* barre de navigation */
+.bar{position:sticky;top:0;z-index:10;background:rgba(8,10,17,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:48px}
+.bar b{font:500 12px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.bar nav{min-width:0}
+.bar nav{display:flex;gap:4px;overflow-x:auto}
+.bar a{font:400 12px var(--f-mono);color:var(--mute);text-decoration:none;padding:6px 10px;border-radius:4px;white-space:nowrap}
+.bar a:hover{color:var(--text);background:var(--panel2)}
+
+/* en-tête */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:24px;align-items:center;padding:56px 0 40px}
+.eyebrow{font:400 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 20px}
+h1{font-size:clamp(56px,9vw,128px);line-height:.94;letter-spacing:-.015em;margin:0 0 28px}
+h1 em{font-style:italic;color:var(--rose)}
+.lead{font-size:19px;max-width:54ch;color:#c9cde0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:32px;border-top:1px solid var(--line)}
+.stat{padding:16px 16px 0 0}
+.stat+.stat{padding-left:16px;border-left:1px solid var(--line)}
+.stat .v{font:500 26px/1.1 var(--f-mono);color:var(--text)}
+.stat .l{font-size:13px;line-height:1.4;color:var(--mute);margin-top:6px}
+.hero canvas{width:100%;aspect-ratio:1/1.05;display:block}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}.hero canvas{max-width:460px;margin:0 auto}}
+@media (max-width:560px){.stats{grid-template-columns:1fr}.stat+.stat{border-left:0;padding-left:0}}
+
+/* sections */
+section.sec{padding:72px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:32px}
+.sec-head .n{font:500 13px var(--f-mono);color:var(--amber);letter-spacing:.06em;white-space:nowrap}
+.sec-head h2{font-size:clamp(34px,4.6vw,56px);line-height:1.05}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:minmax(0,1fr);gap:32px}}
+.grid>*{min-width:0}
+.kit{margin:0 0 22px;padding:14px 16px;border:1px solid var(--line2);border-left:3px solid var(--amber);background:var(--panel);border-radius:6px;font-size:15px;line-height:1.55}
+.kit p{margin:0 0 8px}.kit p:last-child{margin:0}
+.kit b.t{display:block;font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:3px}
+.keep{margin:20px 0 0;padding:12px 16px;border:1px solid var(--line2);border-left:3px solid var(--blue);background:var(--panel2);border-radius:6px;font-size:15px;line-height:1.55}
+.keep b.t{display:block;font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
+.guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:28px 0 0}
+.guide div{padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--panel);font-size:14px;line-height:1.5;color:var(--mute)}
+.guide b{display:block;color:var(--text);font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+@media(max-width:760px){.guide{grid-template-columns:minmax(0,1fr)}}
+.lex dt{font:500 13px var(--f-mono);color:var(--amber);margin-top:14px}.lex dd{margin:3px 0 0;color:var(--mute);font-size:15px;line-height:1.55;max-width:70ch}
+.text{max-width:62ch}
+.text h3{font:500 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:28px 0 10px}
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px}
+.fig canvas{display:block;width:100%}
+.cap{font-size:14px;line-height:1.5;color:var(--mute);margin:12px 0 0}
+.cap b{font:500 12px var(--f-mono);color:var(--text);letter-spacing:.04em}
+.ctl{display:grid;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.ctl.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px}
+@media (max-width:640px){.ctl.two{grid-template-columns:1fr}}
+.field{display:grid;gap:2px}
+.field label{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--mute)}
+.field label output{font:500 13px var(--f-mono);color:var(--text)}
+input[type=range]{width:100%;margin:0;accent-color:var(--amber)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:500 13px var(--f-mono);color:var(--text);background:var(--panel2);border:1px solid var(--line2);border-radius:4px;padding:7px 12px;cursor:pointer}
+.btn:hover{border-color:var(--amber)}
+.btn[aria-pressed="true"]{border-color:var(--amber);color:var(--amber)}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--mute)}
+.chk input{accent-color:var(--amber);width:16px;height:16px}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--line);border-radius:4px;margin-top:4px}
+.readout div{padding:10px 12px;border-right:1px solid var(--line)}
+.readout div:last-child{border-right:0}
+.readout .k{font-size:12px;color:var(--mute);line-height:1.3}
+.readout .v{font:500 15px/1.35 var(--f-mono);margin-top:2px}
+.msg{font-size:14px;line-height:1.5;color:var(--mute);margin:0;min-height:42px}
+.msg b{color:var(--text);font-weight:500}
+.ok{color:var(--blue)} .bad{color:var(--rose)}
+details{margin:14px 0 0;font-size:14px;line-height:1.55;color:var(--mute)}
+summary{cursor:pointer;font:500 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text)}
+details p{margin:10px 0 0}
+
+/* équations */
+math{font-family:'STIX Two Math','Latin Modern Math','Cambria Math','Noto Sans Math',math;font-size:1.08em;color:var(--text)}
+math[display="block"]{display:block math;margin:18px 0;padding:12px 14px;background:var(--panel);border-left:2px solid var(--line2);overflow-x:auto}
+.eqn{font:400 12px var(--f-mono);color:var(--mute);margin:-6px 0 18px}
+
+/* notes et références */
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.notes div{border-top:1px solid var(--line2);padding-top:14px}
+.notes h3{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.notes p{font-size:15px;line-height:1.55;color:#c9cde0;margin:0}
+.refs{font-size:14px;line-height:1.55;color:var(--mute);padding-left:20px;margin:0}
+.refs li{margin-bottom:8px}
+footer{padding:40px 0 72px;border-top:1px solid var(--line)}
+footer p{font-size:14px;color:var(--mute);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="wrap">
+  <b>Avant le temps</b>
+  <nav aria-label="Sections">
+    <a href="#friedmann">§1 Friedmann</a><a href="#inflation">§2 Horizon</a><a href="#eternelle">§3 Éternelle</a><a href="#sans-bord">§4 Sans bord</a><a href="#trou-noir">§5 Trou noir</a><a href="#wdw">§6 Ψ</a><a href="#passe">§7 Histoires</a><a href="#livre">§8 Le livre</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+
+<header class="hero">
+  <div>
+    <p class="eyebrow">Cosmologie quantique · d'après <i>L'origine du temps</i>, Thomas Hertog</p>
+    <h1>Avant<br>le <em>temps</em></h1>
+    <p class="lead">Les équations d'Einstein donnent un début au temps : la singularité du Big Bang. Hartle, Hawking puis Hertog proposent que ce bord n'existe pas. Sept figures calculées en direct montrent d'où vient le problème et comment cette idée le dissout.</p>
+    <div class="guide">
+      <div><b>1 · Une idée</b>Chaque section commence par un résumé en quelques phrases, sans formule.</div>
+      <div><b>2 · Une figure</b>Elle se manipule avec les curseurs. Un encadré explique comment la lire.</div>
+      <div><b>3 · Les équations</b>Elles suivent le texte. « Détails du calcul » donne les hypothèses exactes.</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v" id="stAge">13,79</div><div class="l">milliards d'années depuis a = 0 (modèle ΛCDM, §1)</div></div>
+      <div class="stat"><div class="v" id="stN">≈ 58</div><div class="l">e-folds d'inflation au minimum pour l'horizon (§2)</div></div>
+      <div class="stat"><div class="v">τ = π/2</div><div class="l">pointe lisse de la géométrie sans frontière (§4)</div></div>
+    </div>
+  </div>
+  <canvas id="heroCv" role="img" aria-label="Surface de révolution en fil de fer : une calotte sphérique euclidienne reliée sans cassure à un hyperboloïde, la géométrie sans frontière de Hartle et Hawking"></canvas>
+</header>
+
+<!-- §1 -->
+<section class="sec" id="friedmann" aria-labelledby="h1s">
+  <div class="sec-head"><span class="n">§1</span><h2 id="h1s">Le Big Bang comme bord du temps</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>En relativité générale, le temps fait partie de la géométrie de l'univers, et une géométrie peut avoir un bord. Ici, on remonte l'expansion vers le passé et on regarde ce qui se passe.</p><p><b class="t">Comment lire la figure</b>L'axe horizontal est le temps, l'axe vertical la taille relative de l'univers a (a = 1 aujourd'hui). Repérez l'endroit où la courbe touche zéro : c'est le Big Bang. Essayez de passer Ω<sub>Λ</sub> sous zéro : l'univers finit par se recontracter.</p></div>
+      
+      <p>Un univers homogène et isotrope n'a qu'un degré de liberté géométrique, le facteur d'échelle <i>a(t)</i>.</p>
+      <math display="block"><mrow><mi>d</mi><msup><mi>s</mi><mn>2</mn></msup><mo>=</mo><mo>−</mo><mi>d</mi><msup><mi>t</mi><mn>2</mn></msup><mo>+</mo><msup><mi>a</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mspace width="0.3em"></mspace><mi>d</mi><msubsup><mi mathvariant="normal">Ω</mi><mn>3</mn><mn>2</mn></msubsup></mrow></math>
+      <p>Les équations de Friedmann relient son taux d'expansion au contenu de l'univers :</p>
+      <math display="block"><mrow><msup><mrow><mo>(</mo><mfrac><mover><mi>a</mi><mo>˙</mo></mover><mi>a</mi></mfrac><mo>)</mo></mrow><mn>2</mn></msup><mo>=</mo><msubsup><mi>H</mi><mn>0</mn><mn>2</mn></msubsup><mrow><mo>[</mo><msub><mi mathvariant="normal">Ω</mi><mi>r</mi></msub><msup><mi>a</mi><mrow><mo>−</mo><mn>4</mn></mrow></msup><mo>+</mo><msub><mi mathvariant="normal">Ω</mi><mi>m</mi></msub><msup><mi>a</mi><mrow><mo>−</mo><mn>3</mn></mrow></msup><mo>+</mo><msub><mi mathvariant="normal">Ω</mi><mi>k</mi></msub><msup><mi>a</mi><mrow><mo>−</mo><mn>2</mn></mrow></msup><mo>+</mo><msub><mi mathvariant="normal">Ω</mi><mi mathvariant="normal">Λ</mi></msub><mo>]</mo></mrow></mrow></math>
+      <p>En remontant ces équations vers le passé, a tend vers 0 en un temps fini : la densité diverge et la théorie cesse de s'appliquer. L'âge de l'univers est l'intégrale</p>
+      <math display="block"><mrow><msub><mi>t</mi><mn>0</mn></msub><mo>=</mo><mfrac><mn>1</mn><msub><mi>H</mi><mn>0</mn></msub></mfrac><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><mfrac><mrow><mi>d</mi><mi>a</mi></mrow><mrow><mi>a</mi><mspace width="0.2em"></mspace><mi>E</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow></math>
+      <p>avec <i>E(a)</i> la racine du crochet ci-dessus. Dans ce cadre, t = 0 est un bord : demander ce qui précède n'a pas de sens classique. Les curseurs permettent de voir quels paramètres donnent un Big Bang, un rebond ou un recollapse.</p>
+      <p class="keep"><b class="t">À retenir</b>Dans la théorie classique, le temps commence : t = 0 est un bord, pas un événement qui aurait lui-même une cause.</p>
+      <details><summary>Détails du calcul</summary>
+        <p>Ω<sub>r</sub> est fixé à 9,2·10⁻⁵ et Ω<sub>k</sub> = 1 − Ω<sub>m</sub> − Ω<sub>Λ</sub> − Ω<sub>r</sub>. Le temps est intégré en ln a (règle des trapèzes, 1 200 pas) depuis a = 10⁻⁷. Près d'un point de retournement, un changement de variable en s² évite la singularité intégrable. Conversion : 1/H₀ = 977,8 / H₀ milliards d'années, H₀ en km/s/Mpc.</p>
+      </details>
+    </div>
+    <div class="fig">
+      <canvas id="cvA" style="aspect-ratio:16/10" role="img" aria-label="Facteur d'échelle en fonction du temps pour les paramètres choisis"></canvas>
+      <p class="cap"><b>Fig. 1</b> Facteur d'échelle a(t). La courbe pâle est le modèle ΛCDM de référence.</p>
+      <div class="ctl">
+        <div class="row" id="presetsA"></div>
+        <div class="ctl two" style="margin:0;padding:0;border:0">
+          <div class="field"><label for="aH0"><span>H₀ (km/s/Mpc)</span><output id="aH0v"></output></label><input id="aH0" type="range" min="50" max="90" step="0.1" value="67.4"></div>
+          <div class="field"><label for="aOm"><span>Ω<sub>m</sub> matière</span><output id="aOmv"></output></label><input id="aOm" type="range" min="0" max="3" step="0.005" value="0.315"></div>
+          <div class="field"><label for="aOL"><span>Ω<sub>Λ</sub> énergie sombre</span><output id="aOLv"></output></label><input id="aOL" type="range" min="-1" max="2" step="0.005" value="0.685"></div>
+          <label class="chk"><input id="aCmp" type="checkbox" checked> Afficher la référence ΛCDM</label>
+        </div>
+        <div class="readout" id="roA"></div>
+        <p class="msg" id="msgA" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §2 -->
+<section class="sec" id="inflation" aria-labelledby="h2s">
+  <div class="sec-head"><span class="n">§2</span><h2 id="h2s">Inflation et prolongement du temps</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>Le ciel est presque parfaitement uniforme, alors que ses régions lointaines n'ont jamais pu échanger de signal. C'est comme si des millions de pièces fermées affichaient la même température sans communiquer. L'inflation, une expansion très brève et très rapide, résout cela : tout vient d'une petite région qui était déjà en contact.</p><p><b class="t">Comment lire la figure</b>La courbe donne la distance sur laquelle deux points peuvent encore s'influencer, rapportée à sa valeur actuelle. La ligne pointillée est l'échelle observable aujourd'hui. Pour résoudre le problème, la courbe doit passer au-dessus de cette ligne avant de redescendre. Faites varier la durée N pour trouver le seuil.</p></div>
+      
+      <p>Le modèle chaud pose le problème de l'horizon : des régions du fond diffus cosmologique, jamais en contact causal, ont la même température. Une phase d'expansion accélérée le résout si, à son début (indice i), le rayon de Hubble comobile était plus grand que l'échelle observable aujourd'hui.</p>
+      <math display="block"><mrow><msup><mrow><mo>(</mo><msub><mi>a</mi><mi>i</mi></msub><msub><mi>H</mi><mi>i</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>≳</mo><msup><mrow><mo>(</mo><msub><mi>a</mi><mn>0</mn></msub><msub><mi>H</mi><mn>0</mn></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow></math>
+      <p>Avec <i>H</i> constant pendant l'inflation, puis un univers de rayonnement, la condition devient une borne sur le nombre d'e-folds <i>N</i> :</p>
+      <math display="block"><mrow><mi>N</mi><mo>≳</mo><mi>ln</mi><mo>(</mo><mfrac><mrow><msub><mi>a</mi><mi>R</mi></msub><msub><mi>H</mi><mi>R</mi></msub></mrow><msub><mi>H</mi><mn>0</mn></msub></mfrac><mo>)</mo><mo>≈</mo><mn>58</mn></mrow></math>
+      <p>Un temps conforme η = ∫ d ln a /(aH) mesure la distance parcourue par la lumière. Sans inflation, η = 0 est la singularité. Avec elle, η se prolonge vers les valeurs négatives : le Big Bang chaud n'est plus un commencement. Mais si l'inflation est éternelle, la question de l'origine se déplace vers l'état quantique qui la décrit, ce qui est l'objet des sections suivantes.</p>
+      <p class="keep"><b class="t">À retenir</b>Il faut au moins environ 58 e-folds. Un e-fold est une expansion d'un facteur e ≈ 2,7 ; 58 e-folds multiplient les distances par 10<sup>25</sup>.</p>
+      <details><summary>Hypothèses du modèle</summary>
+        <p>H constant pour a &lt; a<sub>R</sub> = 10⁻²⁷ (réchauffage vers 10¹⁵ GeV), puis H² = H₀²(Ω<sub>r</sub>a⁻⁴ + Ω<sub>m</sub>a⁻³ + Ω<sub>Λ</sub>) avec les valeurs ΛCDM. C'est un modèle de principe : le seuil exact dépend de l'énergie d'inflation.</p>
+      </details>
+    </div>
+    <div class="fig">
+      <canvas id="cvB" style="aspect-ratio:16/10" role="img" aria-label="Rayon de Hubble comobile en fonction du logarithme du facteur d'échelle, avec une phase d'inflation"></canvas>
+      <p class="cap"><b>Fig. 2</b> Rayon de Hubble comobile (aH)⁻¹, en unités de sa valeur actuelle. Au-dessus de la ligne pointillée, tout ce qui est observable aujourd'hui était déjà en contact causal.</p>
+      <div class="ctl">
+        <div class="field"><label for="bN"><span>Durée de l'inflation, N (e-folds)</span><output id="bNv"></output></label><input id="bN" type="range" min="0" max="80" step="0.5" value="62"></div>
+        <div class="readout" id="roB"></div>
+        <p class="msg" id="msgB" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 -->
+<section class="sec" id="eternelle" aria-labelledby="h3e">
+  <div class="sec-head"><span class="n">§3</span><h2 id="h3e">Inflation éternelle</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>Imaginez que l'inflation soit un jeu de dés : à chaque pas, le champ glisse vers le bas de la pente, mais le hasard quantique le secoue. Si la secousse l'emporte sur la glissade, certaines régions remontent et continuent à gonfler, plus vite que les autres ne s'arrêtent.</p><p><b class="t">Comment lire la figure</b>La droite pointillée est la croissance libre du volume, e<sup>3N</sup>. La courbe rose est le volume qui est réellement encore en inflation. Si la rose suit la droite jusqu'au bout, une fraction de l'univers ne cesse jamais de gonfler. Essayez de descendre φ₀ sous le seuil affiché : la courbe s'arrête.</p></div>
+      
+      <p>Linde a montré que l'inflation peut se nourrir de ses propres fluctuations quantiques (chapitre 4 du livre). À chaque e-fold, le champ φ descend la pente du potentiel et reçoit en même temps un saut aléatoire. Pendant ce temps, chaque région de Hubble se divise en e³ ≈ 20 régions qui évoluent indépendamment.</p>
+      <math display="block"><mrow><mfrac><mrow><mi>d</mi><mi>φ</mi></mrow><mrow><mi>d</mi><mi>N</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mfrac><mrow><msup><mi>V</mi><mo>′</mo></msup><mo stretchy="false">(</mo><mi>φ</mi><mo stretchy="false">)</mo></mrow><mrow><mn>3</mn><msup><mi>H</mi><mn>2</mn></msup></mrow></mfrac><mo>+</mo><mfrac><mi>H</mi><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><mspace width="0.2em"></mspace><mi>ξ</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow></math>
+      <p>Si le saut dépasse la descente, certaines régions remontent la pente et une fraction du volume reste en inflation pour toujours :</p>
+      <math display="block"><mrow><mfrac><mi>H</mi><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><mo>&gt;</mo><mfrac><mrow><mo>|</mo><msup><mi>V</mi><mo>′</mo></msup><mo>|</mo></mrow><mrow><mn>3</mn><msup><mi>H</mi><mn>2</mn></msup></mrow></mfrac></mrow></math>
+      <p>Dans cette image, l'inflation n'a pas d'origine : c'est un mécanisme perpétuel qui fabrique des univers-îles, donc un multivers. Hertog raconte que Hawking trouvait cette extension de la réalité injustifiée. Les deux théories s'opposaient en un point précis : l'hypothèse sans bord choisit la plus faible poussée d'inflation, l'inflation éternelle la plus forte.</p>
+      <p class="keep"><b class="t">À retenir</b>Dans l'inflation éternelle, l'inflation n'a pas de début : c'est un processus perpétuel qui crée sans cesse de nouveaux univers-îles. Hawking refusait cette image, et l'approche sans bord l'écarte.</p>
+      <details><summary>Détails du calcul</summary>
+        <p>Unités 8πG = 1, V = ½ m²φ², H² = V/3. La descente vaut −2/φ par e-fold et le bruit mφ/(2π√6). Le seuil éternel est φ² &gt; 4π√6 / m. Ici m est grossi pour la visualisation : la valeur réaliste (m ≈ 6·10⁻⁶) donne φ de l'ordre de 2·10³. L'inflation se termine à φ = √2. 2 500 trajectoires indépendantes, pas de 0,2 e-fold ; la fraction de trajectoires encore en inflation donne la fraction du volume.</p>
+      </details>
+    </div>
+    <div class="fig">
+      <canvas id="cvF" style="aspect-ratio:16/10" role="img" aria-label="Logarithme du volume en inflation en fonction du temps en e-folds"></canvas>
+      <p class="cap"><b>Fig. 3</b> Volume encore en inflation. La droite pointillée est l'expansion libre e<sup>3N</sup>. Sous le seuil, l'inflation finit partout. Au-dessus, une fraction ne finit jamais.</p>
+      <div class="ctl">
+        <div class="ctl two" style="margin:0;padding:0;border:0">
+          <div class="field"><label for="fP"><span>Valeur initiale φ₀</span><output id="fPv"></output></label><input id="fP" type="range" min="3" max="20" step="0.1" value="16"></div>
+          <div class="field"><label for="fM"><span>Masse m (grossie)</span><output id="fMv"></output></label><input id="fM" type="range" min="0.05" max="1" step="0.01" value="0.6"></div>
+        </div>
+        <div class="readout" id="roF"></div>
+        <p class="msg" id="msgF" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §4 -->
+<section class="sec" id="sans-bord" aria-labelledby="h3s">
+  <div class="sec-head"><span class="n">§4</span><h2 id="h3s">L'absence de frontière</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>Pour que le temps n'ait pas de bord, Hartle et Hawking le font pivoter de 90 degrés : il devient une direction d'espace. Le passé se referme alors en une pointe lisse, comme le pôle Sud d'un globe. Demander ce qu'il y a avant le Big Bang revient à demander ce qu'il y a au sud du pôle Sud.</p><p><b class="t">Comment lire la figure</b>À gauche, le chemin suivi dans le plan du temps complexe : la partie rose est le temps imaginaire, la partie bleue le temps réel. À droite, la forme qui en résulte. Faites glisser le curseur du début à la fin : on passe du bol rose, fermé, à l'évasement bleu qui devient notre univers en expansion.</p></div>
+      
+      <p>Hartle et Hawking (1983) proposent de supprimer le bord t = 0 en prolongeant le temps dans le plan complexe. Pour un univers de de Sitter fermé,</p>
+      <math display="block"><mrow><mi>a</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>cosh</mi><mo stretchy="false">(</mo><mi>H</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mi>H</mi></mfrac></mrow></math>
+      <p>En posant t = −iτ, on obtient a = cos(Hτ)/H. Entre τ = π/(2H) et τ = 0, la géométrie est euclidienne et se referme en une calotte lisse, comme le pôle d'une sphère. Rien n'existe « avant » la pointe : ce n'est pas un bord, c'est un point ordinaire de l'espace. Le temps réel apparaît à la jonction, où la signature passe de (+ + + +) à (− + + +).</p>
+      <p>Hertog décrit cette forme comme un bol (chapitre 3) : le passé est fini, mais il n'y a pas de premier instant où le temps serait « allumé ». Le flou quantique fait pivoter la direction du temps de 90 degrés en une direction d'espace, ce qu'on appelle rendre le temps imaginaire. C'est de là que vient l'image du pôle Sud : demander ce qui précède le Big Bang revient à demander ce qu'il y a au sud du pôle Sud.</p>
+      <p class="keep"><b class="t">À retenir</b>La pointe n'est pas un commencement : c'est un point ordinaire de la géométrie. Le temps réel apparaît de façon continue, sans premier instant.</p>
+      <p>L'état quantique est défini par une somme sur les géométries compactes sans bord :</p>
+      <math display="block"><mrow><mi mathvariant="normal">Ψ</mi><mo>[</mo><msub><mi>h</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>]</mo><mo>∼</mo><mo>∫</mo><mi mathvariant="script">D</mi><mi>g</mi><mspace width="0.3em"></mspace><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>S</mi><mi>E</mi></msub><mo>[</mo><mi>g</mi><mo>]</mo></mrow></msup></mrow></math>
+      <p>La figure suit le contour dans le plan du temps complexe : segment imaginaire en rose, temps réel en bleu.</p>
+    </div>
+    <div class="fig">
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
+        <canvas id="cvC1" style="aspect-ratio:1/1.1" role="img" aria-label="Plan du temps complexe avec le contour de Hartle et Hawking"></canvas>
+        <canvas id="cvC2" style="aspect-ratio:1/1.1" role="img" aria-label="Géométrie correspondante en surface de révolution"></canvas>
+      </div>
+      <p class="cap"><b>Fig. 4</b> À gauche, le contour dans le plan complexe de t (H = 1). À droite, la géométrie obtenue : calotte euclidienne (rose) puis hyperboloïde lorentzien (bleu). L'anneau orange est la tranche courante.</p>
+      <div class="ctl">
+        <div class="field"><label for="cS"><span>Position sur le contour</span><output id="cSv"></output></label><input id="cS" type="range" min="0" max="1" step="0.002" value="0.5"></div>
+        <div class="readout" id="roC"></div>
+        <p class="msg" id="msgC" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §5 -->
+<section class="sec" id="trou-noir" aria-labelledby="h5c">
+  <div class="sec-head"><span class="n">§5</span><h2 id="h5c">Le trou noir en temps imaginaire</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>Hawking a appliqué la même astuce aux trous noirs. En temps imaginaire, la singularité disparaît et la géométrie prend la forme d'un cigare dont la pointe est l'horizon. Pour que cette pointe soit lisse, le temps imaginaire doit se refermer sur lui-même avec une période précise.</p><p><b class="t">Comment lire la figure</b>La pointe du bas est l'horizon. Chaque cercle représente le temps imaginaire, qui boucle sur lui-même. Avec β/β<sub>H</sub> = 1, la pointe est lisse. Sinon c'est un cône, comme la pointe d'un chapeau de papier, ce qui est une singularité.</p></div>
+      
+      <p>Hawking a appliqué la même idée aux trous noirs (chapitre 3 du livre). En temps imaginaire τ, la géométrie de Schwarzschild perd sa singularité : elle prend la forme d'un cigare dont la pointe est l'horizon.</p>
+      <math display="block"><mrow><mi>d</mi><msup><mi>s</mi><mn>2</mn></msup><mo>=</mo><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mn>2</mn><mi>M</mi></mrow><mi>r</mi></mfrac><mo>)</mo></mrow><mi>d</mi><msup><mi>τ</mi><mn>2</mn></msup><mo>+</mo><mfrac><mrow><mi>d</mi><msup><mi>r</mi><mn>2</mn></msup></mrow><mrow><mn>1</mn><mo>−</mo><mn>2</mn><mi>M</mi><mo>/</mo><mi>r</mi></mrow></mfrac><mo>+</mo><msup><mi>r</mi><mn>2</mn></msup><mi>d</mi><msubsup><mi mathvariant="normal">Ω</mi><mn>2</mn><mn>2</mn></msubsup></mrow></math>
+      <p>Pour que la pointe soit lisse, τ doit être périodique, de période β = 8πM (G = c = ħ = k = 1). Cette période est l'inverse de la température de Hawking :</p>
+      <math display="block"><mrow><mi>T</mi><mo>=</mo><mfrac><mn>1</mn><mi>β</mi></mfrac><mo>=</mo><mfrac><mn>1</mn><mrow><mn>8</mn><mi>π</mi><mi>M</mi></mrow></mfrac></mrow></math>
+      <p>Avec une autre période, le cigare se termine en cône : c'est une singularité, et la géométrie n'est plus admissible. La régularité fixe donc la température, et c'est ainsi que Hawking et son groupe ont compris pourquoi un trou noir rayonne. Le curseur fait varier la période.</p>
+      <p class="keep"><b class="t">À retenir</b>La période du temps imaginaire est l'inverse d'une température. La régularité de la géométrie suffit donc à fixer la température de Hawking du trou noir.</p>
+      <details><summary>Détails du calcul</summary>
+        <p>M = 1. Le cercle de τ a pour rayon R(r) = (β/2π) √(1 − 2M/r) et la distance propre à l'horizon vaut ρ(r) = √(r(r−2M)) + 2M ln[(√r + √(r−2M)) / √(2M)]. Près de la pointe, R ≈ (β/β<sub>H</sub>) ρ : la pente vaut 1 si et seulement si la période est β<sub>H</sub> = 8πM.</p>
+      </details>
+    </div>
+    <div class="fig">
+      <canvas id="cvG" style="aspect-ratio:1/1;max-width:560px;margin:0 auto" role="img" aria-label="Surface de révolution en forme de cigare, pointe lisse ou conique selon la période du temps imaginaire"></canvas>
+      <p class="cap"><b>Fig. 5</b> Géométrie euclidienne d'un trou noir (M = 1). L'axe vertical est la distance propre à l'horizon ; les cercles figurent le temps imaginaire.</p>
+      <div class="ctl">
+        <div class="field"><label for="gK"><span>Période β / β<sub>H</sub></span><output id="gKv"></output></label><input id="gK" type="range" min="0.5" max="1.5" step="0.005" value="1"></div>
+        <div class="readout" id="roG"></div>
+        <p class="msg" id="msgG" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 -->
+<section class="sec" id="wdw" aria-labelledby="h4s">
+  <div class="sec-head"><span class="n">§6</span><h2 id="h4s">La fonction d'onde de l'univers</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>Si l'univers entier est un système quantique, il a une fonction d'onde Ψ. Dans ce modèle simplifié, elle ne dépend que de la taille a de l'univers. Là où Ψ est exponentielle, c'est une région classiquement interdite, comme une barrière d'effet tunnel.</p><p><b class="t">Comment lire la figure</b>Le graphe montre log|Ψ|² en fonction de a. La zone rosée est la barrière. La courbe de Hartle–Hawking monte à travers la barrière, celle de Vilenkin descend. Au-delà, les deux oscillent : un univers classique en expansion. Faites varier ε et basculez les deux cases.</p></div>
+      
+      <p>Dans le modèle jouet à un seul degré de liberté, l'équation de Wheeler–DeWitt devient une équation de Schrödinger sans temps pour Ψ(a), où ε joue le rôle de ħ effectif et H = 1.</p>
+      <math display="block"><mrow><msup><mi>ε</mi><mn>2</mn></msup><msup><mi mathvariant="normal">Ψ</mi><mo>″</mo></msup><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>=</mo><mi>U</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mspace width="0.2em"></mspace><mi mathvariant="normal">Ψ</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"></mspace><mi>U</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>=</mo><msup><mi>a</mi><mn>2</mn></msup><mo>−</mo><msup><mi>a</mi><mn>4</mn></msup></mrow></math>
+      <p>Pour a &lt; 1/H, U est positif : région euclidienne, Ψ est exponentielle (une barrière). Pour a &gt; 1/H, Ψ oscille : un univers classique en expansion émerge. La condition aux limites choisit l'état.</p>
+      <p><b>Hartle–Hawking :</b> Ψ est régulière en a = 0 (Ψ′(0) = 0). Elle est réelle, croît sous la barrière et devient une onde stationnaire, avec des nœuds.</p>
+      <p><b>Vilenkin (tunnel) :</b> Ψ est purement sortante à grand a. Sous la barrière, elle décroît quand a augmente, et son module n'a pas de nœuds.</p>
+      <p>Les deux décrivent le même univers classique au-delà de a = 1/H, mais pondèrent la barrière à l'inverse. Hertog rappelle (chapitre 4) un défaut de la version initiale de l'état sans bord : calculée « de bas en haut », elle favorise la plus petite poussée d'inflation possible. L'approche descendante du chapitre 6 corrige cela en conditionnant la fonction d'onde à ce qu'on observe, ce qui redistribue le poids vers les univers fortement inflationnistes (§7).</p>
+      <p>Hawking et Hertog (2018) étudient l'état sans frontière pour la sortie de l'inflation éternelle, avec une description duale holographique, et y voient une transition vers un univers classique lisse.</p>
+      <p class="keep"><b class="t">À retenir</b>Choisir la condition aux limites de Ψ, c'est choisir une théorie de l'origine. Hartle–Hawking et Vilenkin décrivent le même univers classique, mais ne donnent pas le même poids aux différentes histoires.</p>
+      <details><summary>Détails numériques</summary>
+        <p>Résolution par Runge–Kutta d'ordre 4 (pas 0,002). Hartle–Hawking : intégration depuis a = 0 avec Ψ = 1, Ψ′ = 0. Vilenkin : onde WKB sortante imposée en a = 2,2, intégrée vers l'intérieur (en complexes). Les deux courbes sont normalisées à leur amplitude en a = 1,7. L'ordre des opérateurs est ignoré : c'est un modèle de principe, pas la physique complète.</p>
+      </details>
+    </div>
+    <div class="fig">
+      <canvas id="cvD" style="aspect-ratio:16/10" role="img" aria-label="Logarithme du carré de la fonction d'onde en fonction du facteur d'échelle pour les états de Hartle-Hawking et de Vilenkin"></canvas>
+      <p class="cap"><b>Fig. 6</b> log₁₀|Ψ(a)|² normalisé. Zone rosée : sous la barrière (a &lt; 1/H).</p>
+      <div class="ctl">
+        <div class="field"><label for="dE"><span>ε (ħ effectif)</span><output id="dEv"></output></label><input id="dE" type="range" min="0.08" max="0.6" step="0.005" value="0.2"></div>
+        <div class="row">
+          <label class="chk"><input id="dHH" type="checkbox" checked> Hartle–Hawking</label>
+          <label class="chk"><input id="dT" type="checkbox" checked> Vilenkin</label>
+        </div>
+        <div class="readout" id="roD"></div>
+        <p class="msg" id="msgD" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §5 -->
+<section class="sec" id="passe" aria-labelledby="h5s">
+  <div class="sec-head"><span class="n">§7</span><h2 id="h5s">Le passé dépend de la question</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>En physique quantique, observer n'est pas seulement lire une valeur : c'est choisir parmi des possibles. Hertog en tire que cela vaut aussi vers le passé : les faits observés aujourd'hui sélectionnent, parmi toutes les histoires possibles, celles qui sont compatibles avec eux.</p><p><b class="t">Comment lire la figure</b>Toutes les lignes partent d'un même point et représentent des histoires possibles. Les fenêtres sont des observations : seules les lignes roses les traversent. Ajoutez une observation à mi-parcours ou réduisez la précision, et regardez le passé retenu se resserrer.</p></div>
+      
+      <p>Dans le cadre de Hertog (chapitre 6), la fonction d'onde de l'univers contient une arborescence d'histoires possibles, chacune pondérée par |Ψ|². Avant toute observation, il n'y a ni prédiction, ni temps global. L'observation, au sens quantique, convertit un possible en fait. Elle n'a pas besoin d'être humaine : un détecteur, un cristal de quartz ou une brisure de symétrie dans l'univers primitif suffisent.</p>
+      <p>Vers le futur, observer élague les branches. L'idée centrale de l'approche descendante est que cela marche aussi vers le passé : l'ensemble des faits observés aujourd'hui est une question posée à Ψ, et seules les histoires compatibles avec elle comptent.</p>
+      <math display="block"><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>h</mi><mo>∣</mo><mi>O</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><msup><mrow><mo>|</mo><mi mathvariant="normal">Ψ</mi><mo stretchy="false">[</mo><mi>h</mi><mo stretchy="false">]</mo><mo>|</mo></mrow><mn>2</mn></msup><mspace width="0.2em"></mspace><msub><mi>χ</mi><mi>O</mi></msub><mo stretchy="false">(</mo><mi>h</mi><mo stretchy="false">)</mo></mrow><mrow><munder><mo>∑</mo><mrow><mi>h</mi><mo>′</mo></mrow></munder><msup><mrow><mo>|</mo><mi mathvariant="normal">Ψ</mi><mo stretchy="false">[</mo><mi>h</mi><mo>′</mo><mo stretchy="false">]</mo><mo>|</mo></mrow><mn>2</mn></msup><mspace width="0.2em"></mspace><msub><mi>χ</mi><mi>O</mi></msub><mo stretchy="false">(</mo><mi>h</mi><mo>′</mo><mo stretchy="false">)</mo></mrow></mfrac></mrow></math>
+      <p>Ici χ<sub>O</sub> vaut 1 pour les histoires compatibles avec l'observation O et 0 sinon. Ce n'est pas un simple tri a posteriori comme le principe anthropique : la sélection agit au niveau de la fonction d'onde elle-même. La figure en donne une image où les histoires sont des trajectoires de poids égal.</p>
+      <p class="keep"><b class="t">À retenir</b>Le passé n'est pas fixé d'avance : il dépend de la question posée à la fonction d'onde. C'est l'idée centrale de la cosmologie « descendante ».</p>
+      <details><summary>Limites de la figure</summary>
+        <p>900 marches aléatoires gaussiennes (40 pas) partent d'un même point, l'origine. Ce n'est pas un calcul de gravité quantique : chaque trajectoire a le même poids et la coordonnée verticale est un temps schématique.</p>
+      </details>
+    </div>
+    <div class="fig">
+      <canvas id="cvE" style="aspect-ratio:16/11" role="img" aria-label="Un faisceau d'histoires partant d'une origine commune. Seules celles qui passent par les fenêtres d'observation sont en rose."></canvas>
+      <p class="cap"><b>Fig. 7</b> Histoires possibles (gris) et histoires compatibles avec l'observation (rose). Déplacer les fenêtres change le passé retenu.</p>
+      <div class="ctl">
+        <div class="ctl two" style="margin:0;padding:0;border:0">
+          <div class="field"><label for="pastA"><span>Observation d'aujourd'hui</span><output id="pastAv"></output></label><input id="pastA" type="range" min="-1" max="1" step="0.01" value="0.35"></div>
+          <div class="field"><label for="pastW"><span>Précision</span><output id="pastWv"></output></label><input id="pastW" type="range" min="0.1" max="0.9" step="0.01" value="0.3"></div>
+          <label class="chk"><input id="pastMidOn" type="checkbox"> Ajouter une observation à mi-parcours</label>
+          <div class="field"><label for="pastB"><span>Position de cette observation</span><output id="pastBv"></output></label><input id="pastB" type="range" min="-1" max="1" step="0.01" value="-0.4" disabled></div>
+        </div>
+        <div class="row"><button class="btn" id="pastPick" type="button">Tirer un passé compatible</button></div>
+        <div class="readout" id="roE"></div>
+        <p class="msg" id="msgE" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 -->
+<section class="sec" id="livre" aria-labelledby="h6s">
+  <div class="sec-head"><span class="n">§8</span><h2 id="h6s">Ce que le livre ajoute</h2></div>
+  <p class="mute" style="max-width:70ch;margin-bottom:28px">Résumé libre des idées centrales, avec les chapitres de l'édition numérique.</p>
+  <div class="notes">
+    <div><h3>Un triptyque (ch. 6)</h3><p>La cosmologie quantique de Hawking et Hertog tient trois éléments ensemble : une origine (l'hypothèse sans bord), une évolution (la somme sur toutes les histoires) et l'observation. Ils ne se séparent plus comme dans la physique ordinaire, où lois, conditions aux limites et mesures forment des étapes distinctes.</p></div>
+    <div><h3>Des lois qui évoluent (ch. 6-7)</h3><p>Hertog compare la cosmologie à l'évolution darwinienne. En remontant vers le Big Bang, on atteint une méta-évolution où les lois elles-mêmes évoluent. Ce que nous prenons pour des lois fixes serait en partie un résultat de l'histoire, comme les accidents figés en biologie.</p></div>
+    <div><h3>Un temps émergent (ch. 7)</h3><p>Par la dualité holographique, l'histoire d'un univers en inflation serait encodée dans un monde quantique sans temps, sur une surface de dimension inférieure. Le temps y est la dimension qui émerge. Hawking en concluait que l'holographie écarte l'idée d'un multivers.</p></div>
+    <div><h3>L'origine des lois (ch. 7)</h3><p>Avec l'holographie, la rotation du temps en espace suggère que la physique elle-même s'évanouit à l'approche du Big Bang. L'hypothèse sans bord devient moins une loi de l'origine que l'origine des lois. Lemaître avait déjà envisagé que le temps ne prenne sens qu'après la subdivision du quantum initial.</p></div>
+  </div>
+</section>
+
+</main>
+
+<section class="sec" id="lexique" aria-labelledby="hlex">
+  <div class="sec-head"><span class="n">+</span><h2 id="hlex">Lexique</h2></div>
+  <dl class="lex">
+    <dt>Facteur d'échelle a(t)</dt><dd>Taille relative de l'univers : toutes les distances sont multipliées par a. Vaut 1 aujourd'hui.</dd>
+    <dt>e-fold</dt><dd>Unité de durée de l'inflation : une expansion d'un facteur e ≈ 2,7.</dd>
+    <dt>Rayon de Hubble</dt><dd>Distance au-delà de laquelle l'expansion éloigne les objets plus vite que la lumière ne peut les rattraper.</dd>
+    <dt>Temps imaginaire</dt><dd>Le temps t multiplié par i. Mathématiquement, le temps devient une direction d'espace, ce qui supprime le bord.</dd>
+    <dt>Géométrie euclidienne</dt><dd>Géométrie où le temps est traité comme une direction d'espace. C'est celle du bol de Hartle–Hawking et du cigare de Hawking.</dd>
+    <dt>Fonction d'onde de l'univers</dt><dd>Objet qui attribue une probabilité à chaque histoire possible de l'univers.</dd>
+    <dt>Condition aux limites</dt><dd>Hypothèse de départ qui sélectionne un état parmi tous ceux qu'autorise l'équation de Wheeler–DeWitt.</dd>
+    <dt>Approche descendante</dt><dd>Méthode de Hawking et Hertog : on conditionne la fonction d'onde à ce qu'on observe, au lieu de partir du passé.</dd>
+  </dl>
+</section>
+
+<footer><div class="wrap">
+  <h3 class="mono mute" style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">Références</h3>
+  <ol class="refs">
+    <li>J. B. Hartle, S. W. Hawking, « Wave function of the Universe », <i>Phys. Rev. D</i> 28, 2960 (1983).</li>
+    <li>A. Vilenkin, « Quantum creation of universes », <i>Phys. Rev. D</i> 30, 509 (1984).</li>
+    <li>J. B. Hartle, S. W. Hawking, T. Hertog, « The classical universes of the no-boundary quantum state », <i>Phys. Rev. D</i> 77, 123537 (2008).</li>
+    <li>S. W. Hawking, T. Hertog, « A smooth exit from eternal inflation? », <i>JHEP</i> 04 (2018) 147.</li>
+    <li>B. S. DeWitt, « Quantum theory of gravity. I », <i>Phys. Rev.</i> 160, 1113 (1967).</li>
+    <li>T. Hertog, <i>L'origine du temps</i> (édition originale : <i>On the Origin of Time</i>, 2023).</li>
+  </ol>
+  <p style="margin-top:20px">Les figures sont des modèles de principe en unités réduites. Elles illustrent les mécanismes, elles ne reproduisent pas les calculs complets des articles.</p>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var TAU=Math.PI*2;
+function clamp(x,a,b){return Math.min(b,Math.max(a,x))}
+function rng(seed){return function(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}}
+function fr(n,d){return n.toFixed(d==null?2:d).replace('.',',').replace('-','−')}
+var cs=getComputedStyle(document.documentElement),C={};
+['bg','panel','line','line2','text','mute','blue','amber','rose'].forEach(function(k){C[k]=cs.getPropertyValue('--'+k).trim()});
+var MONO='11px "JetBrains Mono", ui-monospace, monospace';
+function fit(cv){
+  var dpr=Math.min(2,window.devicePixelRatio||1),r=cv.getBoundingClientRect();
+  var w=Math.max(10,Math.round(r.width)),h=Math.max(10,Math.round(r.height));
+  if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
+  var ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx:ctx,w:w,h:h};
+}
+var live=[];
+function register(el,draw){
+  var o={vis:true,dirty:true,draw:draw};
+  if('IntersectionObserver' in window){o.vis=false;new IntersectionObserver(function(es){o.vis=es[0].isIntersecting;if(o.vis)o.dirty=true},{rootMargin:'100px'}).observe(el)}
+  live.push(o);return o;
+}
+function loop(ts){for(var i=0;i<live.length;i++){var o=live[i];if(o.vis)o.draw(ts/1000)}requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+window.addEventListener('resize',function(){live.forEach(function(o){o.dirty=true})});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){live.forEach(function(o){o.dirty=true})});
+
+/* ---------- utilitaires de tracé ---------- */
+function niceTicks(lo,hi,n){
+  var span=hi-lo,step=Math.pow(10,Math.floor(Math.log10(span/n))),err=span/n/step;
+  step*=err>=5?5:(err>=2?2:1);
+  var out=[];for(var v=Math.ceil(lo/step)*step;v<=hi+1e-9;v+=step)out.push(Math.abs(v)<1e-9?0:v);
+  return out;
+}
+function frame(ctx,B,xr,yr,xt,yt,xl,yl,fx,fy){
+  var X=function(v){return B.l+(v-xr[0])/(xr[1]-xr[0])*(B.r-B.l)},Y=function(v){return B.b-(v-yr[0])/(yr[1]-yr[0])*(B.b-B.t)};
+  ctx.font=MONO;ctx.lineWidth=1;
+  ctx.textAlign='center';ctx.textBaseline='top';
+  xt.forEach(function(v){var x=X(v);ctx.strokeStyle=C.line;ctx.beginPath();ctx.moveTo(x,B.t);ctx.lineTo(x,B.b);ctx.stroke();ctx.fillStyle=C.mute;ctx.fillText(fx?fx(v):String(v),x,B.b+6)});
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  yt.forEach(function(v){var y=Y(v);ctx.strokeStyle=C.line;ctx.beginPath();ctx.moveTo(B.l,y);ctx.lineTo(B.r,y);ctx.stroke();ctx.fillStyle=C.mute;ctx.fillText(fy?fy(v):String(v),B.l-8,y)});
+  ctx.strokeStyle=C.line2;ctx.strokeRect(B.l,B.t,B.r-B.l,B.b-B.t);
+  ctx.fillStyle=C.mute;ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(xl,(B.l+B.r)/2,B.b+34);
+  ctx.save();ctx.translate(14,(B.t+B.b)/2);ctx.rotate(-Math.PI/2);ctx.textBaseline='top';ctx.textAlign='center';ctx.fillText(yl,0,-6);ctx.restore();
+  return {X:X,Y:Y};
+}
+function label(ctx,txt,x,y,col,align){ctx.font=MONO;ctx.fillStyle=col||C.text;ctx.textAlign=align||'left';ctx.textBaseline='middle';ctx.fillText(txt,x,y)}
+
+/* =====================================================
+   §1 FRIEDMANN
+   ===================================================== */
+var OR=9.2e-5;
+function E2(a,P){return OR/Math.pow(a,4)+P.Om/Math.pow(a,3)+(1-P.Om-P.OL-OR)/(a*a)+P.OL}
+function bis(f,x0,x1){var f0=f(x0);for(var i=0;i<70;i++){var m=(x0+x1)/2,fm=f(m);if((fm>0)===(f0>0))x0=m;else x1=m}return (x0+x1)/2}
+function friedmann(P){
+  var tu=977.8/P.H0,f=function(a){return E2(a,P)},i,res={pts:[],kind:'bb',age:NaN,aMin:0,aMax:0,tTop:0,t0:0};
+  var prev=1,a;
+  for(i=1;i<=3000;i++){a=Math.exp(-i*Math.log(1e6)/3000);if(f(a)<=0){res.aMin=bis(f,a,prev);break}prev=a}
+  prev=1;
+  for(i=1;i<=3000;i++){a=Math.exp(i*Math.log(40)/3000);if(f(a)<=0){res.aMax=bis(f,prev,a);break}prev=a}
+  var raw=[],t=0;
+  if(!res.aMin){
+    var n=1200,l0=Math.log(1e-7),pf=1/Math.sqrt(f(Math.exp(l0)));raw.push([0,Math.exp(l0)]);
+    for(i=1;i<=n;i++){var l=l0-l0*i/n,aa=Math.exp(l),fa=1/Math.sqrt(f(aa));t+=(pf+fa)/2*(-l0/n);pf=fa;raw.push([t,aa])}
+    res.age=t*tu;res.kind='bb';
+  }else{
+    res.kind='bounce';var am=res.aMin,m=500,ds=1/m;raw.push([0,am]);
+    for(i=0;i<m;i++){var s=(i+.5)*ds,ab=am+(1-am)*s*s,g=2*(1-am)*s/(ab*Math.sqrt(f(ab)));t+=g*ds;raw.push([t,am+(1-am)*(i+1)*ds*(i+1)*ds])}
+    res.age=NaN;res.t0=t*tu;
+  }
+  var t1=t;
+  if(res.aMax){
+    var aM=res.aMax,mm=500,d2=1/mm;
+    for(i=0;i<mm;i++){var s2=(i+.5)*d2,ab2=aM-(aM-1)*(1-s2)*(1-s2),g2=2*(aM-1)*(1-s2)/(ab2*Math.sqrt(Math.max(1e-12,f(ab2))));t+=g2*d2;var sn=(i+1)*d2;raw.push([t,aM-(aM-1)*(1-sn)*(1-sn)])}
+    res.tTop=t*tu;
+    var top=t,len=raw.length;
+    for(i=len-2;i>=0;i--)raw.push([2*top-raw[i][0],raw[i][1]]);
+  }else{
+    var n2=500,la=Math.log(4);t=t1;var pf2=1/Math.sqrt(f(1));
+    for(i=1;i<=n2;i++){var l2=la*i/n2,a3=Math.exp(l2),fa2=1/Math.sqrt(f(a3));t+=(pf2+fa2)/2*(la/n2);pf2=fa2;raw.push([t,a3])}
+  }
+  res.pts=raw.map(function(p){return [p[0]*tu,p[1]]});
+  res.t1=t1*tu;
+  return res;
+}
+var A={H0:67.4,Om:.315,OL:.685,cmp:true};
+var REF=friedmann({H0:67.4,Om:.315,OL:.685});
+$('#stAge').textContent=fr(REF.age,2);
+var PRE=[
+  {n:'ΛCDM (Planck)',H0:67.4,Om:.315,OL:.685},
+  {n:'Einstein–de Sitter',H0:67.4,Om:1,OL:0},
+  {n:'de Sitter pur',H0:67.4,Om:0,OL:1},
+  {n:'Fermé (recollapse)',H0:67.4,Om:3,OL:0},
+  {n:'Rebond (sans Big Bang)',H0:67.4,Om:.1,OL:1.5}
+];
+var sA={H0:$('#aH0'),Om:$('#aOm'),OL:$('#aOL')};
+var vA={H0:$('#aH0v'),Om:$('#aOmv'),OL:$('#aOLv')};
+function syncA(){sA.H0.value=A.H0;sA.Om.value=A.Om;sA.OL.value=A.OL;vA.H0.textContent=fr(A.H0,1);vA.Om.textContent=fr(A.Om,3);vA.OL.textContent=fr(A.OL,3)}
+var pr=$('#presetsA');
+PRE.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='btn';b.textContent=p.n;b.addEventListener('click',function(){A.H0=p.H0;A.Om=p.Om;A.OL=p.OL;syncA();updA()});pr.appendChild(b)});
+['H0','Om','OL'].forEach(function(k){sA[k].addEventListener('input',function(){A[k]=parseFloat(sA[k].value);syncA();updA()})});
+$('#aCmp').addEventListener('change',function(){A.cmp=this.checked;liveA.dirty=true});
+var curA=null;
+function updA(){
+  curA=friedmann(A);
+  var Ok=1-A.Om-A.OL-OR,q0=OR+A.Om/2-A.OL,r=curA;
+  var items=[['Ω<sub>k</sub> (courbure)',fr(Ok,3)],['Âge depuis a = 0',r.kind==='bb'?fr(r.age,2)+' Gyr':'aucun'],['q₀ (décélération)',fr(q0,2)]];
+  $('#roA').innerHTML=items.map(function(i){return '<div><div class="k">'+i[0]+'</div><div class="v">'+i[1]+'</div></div>'}).join('');
+  var m;
+  if(r.kind==='bounce')m='<b class="bad">Rebond.</b> a ne descend pas sous '+fr(r.aMin,2)+' : il n\'y a pas de Big Bang dans ce modèle. Ces valeurs sont exclues par les observations.';
+  else if(r.aMax)m='<b class="ok">Big Bang, puis recollapse</b> à t ≈ '+fr(2*r.tTop,0)+' Gyr. a atteint '+fr(r.aMax,2)+' au maximum.';
+  else m='<b class="ok">Big Bang.</b> a → 0 à t = 0 en un temps fini : c\'est la singularité, le bord du temps de la relativité classique.';
+  $('#msgA').innerHTML=m;
+  liveA.dirty=true;
+}
+var cvA=$('#cvA');
+var liveA=register(cvA,function(){
+  if(!liveA.dirty||!curA)return;liveA.dirty=false;
+  var f=fit(cvA),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:48,t:12,r:w-14,b:h-44},pts=curA.pts,i;
+  var tmax=0,amax=1.4;pts.forEach(function(p){if(p[0]>tmax)tmax=p[0];if(p[1]>amax)amax=p[1]});
+  if(A.cmp){REF.pts.forEach(function(p){if(p[0]>tmax)tmax=p[0]});}
+  tmax=Math.max(tmax*1.04,5);amax=Math.min(amax*1.08,6);
+  var g=frame(ctx,B,[0,tmax],[0,amax],niceTicks(0,tmax,6),niceTicks(0,amax,5),'temps depuis a = 0 (milliards d\'années)','a(t)',function(v){return String(v)},function(v){return String(v)});
+  ctx.save();ctx.beginPath();ctx.rect(B.l,B.t,B.r-B.l,B.b-B.t);ctx.clip();
+  if(A.cmp){ctx.strokeStyle=C.line2;ctx.lineWidth=1.6;ctx.setLineDash([5,5]);ctx.beginPath();REF.pts.forEach(function(p,k){var x=g.X(p[0]),y=g.Y(p[1]);if(k)ctx.lineTo(x,y);else ctx.moveTo(x,y)});ctx.stroke();ctx.setLineDash([])}
+  ctx.strokeStyle=C.blue;ctx.lineWidth=2.4;ctx.beginPath();pts.forEach(function(p,k){var x=g.X(p[0]),y=g.Y(p[1]);if(k)ctx.lineTo(x,y);else ctx.moveTo(x,y)});ctx.stroke();
+  ctx.restore();
+  // aujourd'hui
+  var tn=curA.kind==='bb'?curA.age:curA.t0;
+  ctx.strokeStyle=C.amber;ctx.lineWidth=1;ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(g.X(tn),g.Y(0));ctx.lineTo(g.X(tn),g.Y(1));ctx.lineTo(B.l,g.Y(1));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=C.amber;ctx.beginPath();ctx.arc(g.X(tn),g.Y(1),5,0,TAU);ctx.fill();
+  label(ctx,'aujourd\'hui (a = 1)',g.X(tn)+10,g.Y(1)+16,C.amber);
+  if(curA.kind==='bb'){ctx.fillStyle=C.rose;ctx.beginPath();ctx.arc(g.X(0),g.Y(0),5,0,TAU);ctx.fill();label(ctx,'a → 0 : singularité',g.X(0)+10,g.Y(0)-12,C.rose)}
+  else label(ctx,'rebond : a minimal',g.X(0)+10,g.Y(curA.aMin)-14,C.rose);
+});
+syncA();updA();
+
+/* =====================================================
+   §2 INFLATION
+   ===================================================== */
+var aR=1e-27,HR=Math.sqrt(OR)/(aR*aR),NMIN=Math.log(aR*HR);
+$('#stN').textContent='≈ '+Math.round(NMIN);
+function Hh(a){return a<aR?HR:Math.sqrt(OR/Math.pow(a,4)+.315/Math.pow(a,3)+.685)}
+function yH(lna){var a=Math.exp(lna);return -Math.log10(a*Hh(a))}
+var Bn=62,sB=$('#bN'),vB=$('#bNv');
+function updB(){
+  Bn=parseFloat(sB.value);vB.textContent=fr(Bn,1);
+  var y0=-Math.log10(aR*Math.exp(-Bn)*HR);
+  var ok=Bn>=NMIN;
+  $('#roB').innerHTML=[['N minimal',fr(NMIN,1)],['(aH)⁻¹ au début','10<sup>'+fr(y0,1)+'</sup> × actuel'],['Horizon',ok?'résolu':'non résolu']].map(function(i){return '<div><div class="k">'+i[0]+'</div><div class="v">'+i[1]+'</div></div>'}).join('');
+  $('#msgB').innerHTML=ok
+    ?'<b class="ok">Problème de l\'horizon résolu.</b> Au début de l\'inflation, la région observable tenait dans un rayon de Hubble : elle avait pu s\'homogénéiser. Le temps conforme se prolonge avant le Big Bang chaud.'
+    :'<b class="bad">Insuffisant.</b> Il manque '+fr(NMIN-Bn,1)+' e-folds : au début, la région observable dépassait le rayon de Hubble.';
+  liveB.dirty=true;
+}
+sB.addEventListener('input',updB);
+var cvB=$('#cvB');
+var liveB=register(cvB,function(){
+  if(!liveB.dirty)return;liveB.dirty=false;
+  var f=fit(cvB),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:48,t:12,r:w-14,b:h-44};
+  var l0=Math.log(aR)-Bn,xr=[Math.min(l0,-70)-2,0],ymax=Math.max(3,-Math.log10(aR*Math.exp(-Bn)*HR)+1),yr=[-27,ymax];
+  var g=frame(ctx,B,xr,yr,niceTicks(xr[0],0,6),niceTicks(-25,ymax,5),'ln a','log₁₀ (aH)⁻¹ / (a₀H₀)⁻¹');
+  // zone d'inflation
+  ctx.fillStyle='rgba(255,122,152,.10)';ctx.fillRect(g.X(l0),B.t,g.X(Math.log(aR))-g.X(l0),B.b-B.t);
+  // ligne y = 0
+  ctx.strokeStyle=C.amber;ctx.setLineDash([4,4]);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(B.l,g.Y(0));ctx.lineTo(B.r,g.Y(0));ctx.stroke();ctx.setLineDash([]);
+  label(ctx,'échelle observable aujourd\'hui',g.X(Math.log(aR))+8,g.Y(0)+14,C.amber);
+  // courbe
+  ctx.strokeStyle=C.blue;ctx.lineWidth=2.4;ctx.beginPath();
+  var n=500;for(var i=0;i<=n;i++){var l=l0+(0-l0)*i/n,x=g.X(l),y=g.Y(yH(l));if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y)}ctx.stroke();
+  // jalons
+  ctx.fillStyle=C.mute;
+  [[Math.log(aR),'fin de l\'inflation'],[Math.log(1/3400),'égalité',1]].forEach(function(m){var x=g.X(m[0]);ctx.strokeStyle=C.line2;ctx.setLineDash([2,4]);ctx.beginPath();ctx.moveTo(x,B.t);ctx.lineTo(x,B.b);ctx.stroke();ctx.setLineDash([]);label(ctx,m[1],x+(m[2]?-6:6),B.t+12,C.mute,m[2]?'right':'left')});
+  label(ctx,'inflation',(g.X(l0)+g.X(Math.log(aR)))/2,B.b-14,C.rose,'center');
+  ctx.fillStyle=C.rose;ctx.beginPath();ctx.arc(g.X(l0),g.Y(yH(l0)),4.5,0,TAU);ctx.fill();
+});
+updB();
+
+/* =====================================================
+   §3 SANS FRONTIÈRE
+   ===================================================== */
+var TMAX=1.9;
+function geo(w){ // w in [0,1] -> {r,z,im,re}
+  if(w<=.5){var tau=Math.PI/2*(1-2*w);return {r:Math.cos(tau),z:-Math.sin(tau),re:0,im:-tau,euc:true}}
+  var t=(w-.5)*2*TMAX;return {r:Math.cosh(t),z:Math.sinh(t),re:t,im:0,euc:false};
+}
+function drawSurface(ctx,cx,cy,sc,tilt,phi0,wCur,meridians,rings){
+  var ct=Math.cos(tilt),st=Math.sin(tilt),i,k;
+  function proj(r,z,phi){var X=r*Math.cos(phi),Z=r*Math.sin(phi);var Y2=z*ct-Z*st,Z2=z*st+Z*ct;return [cx+X*sc,cy-Y2*sc,Z2]}
+  function col(w,depth){var a=.22+.55*clamp((depth+4)/8,0,1);return w<=.5?'rgba(255,122,152,'+a.toFixed(3)+')':'rgba(109,179,255,'+a.toFixed(3)+')'}
+  ctx.lineWidth=1;ctx.lineCap='round';
+  var NS=70;
+  for(k=0;k<meridians;k++){
+    var phi=phi0+k*TAU/meridians,prev=null;
+    for(i=0;i<=NS;i++){var w=i/NS,g=geo(w),p=proj(g.r,g.z,phi);
+      if(prev){ctx.strokeStyle=col(w,p[2]);ctx.beginPath();ctx.moveTo(prev[0],prev[1]);ctx.lineTo(p[0],p[1]);ctx.stroke()}prev=p}
+  }
+  for(i=1;i<=rings;i++){
+    var w2=i/(rings+1),g2=geo(w2),pp=null;
+    for(k=0;k<=48;k++){var ph=phi0+k*TAU/48,q=proj(g2.r,g2.z,ph);
+      if(pp){ctx.strokeStyle=col(w2,q[2]);ctx.beginPath();ctx.moveTo(pp[0],pp[1]);ctx.lineTo(q[0],q[1]);ctx.stroke()}pp=q}
+  }
+  if(wCur!=null){
+    var gc=geo(wCur),pc=null;ctx.strokeStyle=C.amber;ctx.lineWidth=2.4;
+    for(k=0;k<=64;k++){var ph2=phi0+k*TAU/64,q2=proj(gc.r,gc.z,ph2);if(pc){ctx.beginPath();ctx.moveTo(pc[0],pc[1]);ctx.lineTo(q2[0],q2[1]);ctx.stroke()}pc=q2}
+  }
+}
+/* en-tête */
+var heroCv=$('#heroCv');
+register(heroCv,function(t){
+  var f=fit(heroCv),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var sc=Math.min(w/(2*Math.cosh(TMAX)*1.08),h/(Math.sinh(TMAX)+1.2)/1.08);
+  drawSurface(ctx,w/2,h*.64,sc,.42,reduce?.6:t*.18,null,28,26);
+  label(ctx,'a = 0 : pointe lisse',w/2+8,h*.64+sc*1.0+16,C.rose,'left');
+  label(ctx,'temps réel',w/2+sc*Math.cosh(TMAX)*.55,h*.64-sc*Math.sinh(TMAX)*.95,C.blue,'left');
+});
+/* figure 3 */
+var cS=$('#cS'),vS=$('#cSv'),cvC1=$('#cvC1'),cvC2=$('#cvC2'),cW=.5;
+function updC(){
+  cW=parseFloat(cS.value);vS.textContent=fr(cW,2);var g=geo(cW);
+  var tstr=g.euc?(Math.abs(g.im)<1e-3?'0':'−'+fr(Math.abs(g.im),2)+' i'):fr(g.re,2);
+  $('#roC').innerHTML=[['t',tstr],['a(t) = cosh t',fr(g.r,3)],['Signature',g.euc?'(+ + + +)':'(− + + +)']].map(function(i){return '<div><div class="k">'+i[0]+'</div><div class="v">'+i[1]+'</div></div>'}).join('');
+  var m;
+  if(cW<.01)m='<b class="ok">Pointe de la calotte.</b> a = 0, mais la géométrie y est lisse. Il n\'y a pas de « avant » : comme au pôle Sud, la question n\'a pas de sens.';
+  else if(g.euc)m='<b>Temps imaginaire.</b> La tranche est une 3-sphère de rayon cos τ : de l\'espace pur, sans écoulement du temps.';
+  else if(cW<.52)m='<b class="ok">Jonction.</b> Le contour tourne de 90° dans le plan complexe : le temps devient réel et se met à s\'écouler.';
+  else m='<b>Temps réel.</b> La 3-sphère grandit comme cosh t : univers de de Sitter en expansion.';
+  $('#msgC').innerHTML=m;
+  liveC1.dirty=liveC2.dirty=true;
+}
+cS.addEventListener('input',updC);
+var liveC1=register(cvC1,function(){
+  if(!liveC1.dirty)return;liveC1.dirty=false;
+  var f=fit(cvC1),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:36,t:12,r:w-12,b:h-40};
+  var g=frame(ctx,B,[-.4,TMAX+.1],[-1.8,.3],[0,1,2],[-1.5,-1,-.5,0],'Re t','Im t',function(v){return String(v)},function(v){return String(v)});
+  ctx.lineWidth=3;ctx.lineCap='round';
+  ctx.strokeStyle=C.rose;ctx.beginPath();ctx.moveTo(g.X(0),g.Y(-Math.PI/2));ctx.lineTo(g.X(0),g.Y(0));ctx.stroke();
+  ctx.strokeStyle=C.blue;ctx.beginPath();ctx.moveTo(g.X(0),g.Y(0));ctx.lineTo(g.X(TMAX),g.Y(0));ctx.stroke();
+  label(ctx,'−iπ/2 : a = 0',g.X(0)+8,g.Y(-Math.PI/2)-4,C.rose);
+  label(ctx,'t = 0 : a = 1/H',g.X(0)+8,g.Y(0)+14,C.mute);
+  var gc=geo(cW);ctx.fillStyle=C.amber;ctx.beginPath();ctx.arc(g.X(gc.re),g.Y(gc.im),6,0,TAU);ctx.fill();
+});
+var liveC2=register(cvC2,function(){
+  if(!liveC2.dirty)return;liveC2.dirty=false;
+  var f=fit(cvC2),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var sc=Math.min(w/(2*Math.cosh(TMAX)*1.12),h/(Math.sinh(TMAX)+1.25)/1.1);
+  drawSurface(ctx,w/2,h*.66,sc,.42,.5,cW,16,14);
+});
+updC();
+
+/* =====================================================
+   §4 WHEELER–DeWITT (modèle jouet)
+   ===================================================== */
+function U(x){return x*x-x*x*x*x}
+var XMAX=2.2,HS=.002,XREF=1.7;
+function solveHH(eps){
+  var n=Math.round(XMAX/HS),out=new Float32Array(n+1),x=0,p=1,q=0,i,e2=eps*eps,kk=Math.sqrt(-U(XREF))/eps,refEnv=1;
+  function f(x,p,q){return [q,U(x)/e2*p]}
+  for(i=0;i<=n;i++){
+    out[i]=p*p;
+    if(Math.abs(x-XREF)<HS/2)refEnv=p*p+q*q/(kk*kk);
+    var k1=f(x,p,q),k2=f(x+HS/2,p+HS/2*k1[0],q+HS/2*k1[1]),k3=f(x+HS/2,p+HS/2*k2[0],q+HS/2*k2[1]),k4=f(x+HS,p+HS*k3[0],q+HS*k3[1]);
+    p+=HS/6*(k1[0]+2*k2[0]+2*k3[0]+k4[0]);q+=HS/6*(k1[1]+2*k2[1]+2*k3[1]+k4[1]);x+=HS;
+  }
+  return {v:out,ref:refEnv};
+}
+function solveT(eps){
+  var n=Math.round(XMAX/HS),out=new Float32Array(n+1),x=XMAX,e2=eps*eps,k=Math.sqrt(-U(x))/eps,g=-(2*x-4*x*x*x)/(4*U(x));
+  var pr=1,pi=0,qr=g*pr-k*pi,qi=k*pr+g*pi,i;
+  function f(x,s){return [s[2],s[3],U(x)/e2*s[0],U(x)/e2*s[1]]}
+  for(i=n;i>=0;i--){
+    out[i]=pr*pr+pi*pi;
+    var s=[pr,pi,qr,qi],a=f(x,s),b=f(x-HS/2,s.map(function(v,j){return v-HS/2*a[j]})),c=f(x-HS/2,s.map(function(v,j){return v-HS/2*b[j]})),d=f(x-HS,s.map(function(v,j){return v-HS*c[j]}));
+    pr-=HS/6*(a[0]+2*b[0]+2*c[0]+d[0]);pi-=HS/6*(a[1]+2*b[1]+2*c[1]+d[1]);qr-=HS/6*(a[2]+2*b[2]+2*c[2]+d[2]);qi-=HS/6*(a[3]+2*b[3]+2*c[3]+d[3]);x-=HS;
+  }
+  return {v:out,ref:out[Math.round(XREF/HS)]};
+}
+var D={eps:.2,hh:true,t:true,cur:null};
+var sD=$('#dE'),vD=$('#dEv');
+function updD(){
+  D.eps=parseFloat(sD.value);vD.textContent=fr(D.eps,3);
+  var a=solveHH(D.eps),b=solveT(D.eps);D.cur={hh:a,t:b};
+  var i5=Math.round(.5/HS),r=Math.log10(a.v[i5]/a.ref)-Math.log10(b.v[i5]/b.ref);
+  $('#roD').innerHTML=[['HH à a = 0,5','10<sup>'+fr(Math.log10(a.v[i5]/a.ref),1)+'</sup>'],['Vilenkin à a = 0,5','10<sup>'+fr(Math.log10(b.v[i5]/b.ref),1)+'</sup>'],['Écart HH / V','10<sup>'+fr(r,1)+'</sup>']].map(function(i){return '<div><div class="k">'+i[0]+'</div><div class="v">'+i[1]+'</div></div>'}).join('');
+  $('#msgD').innerHTML='Sous la barrière, <b>Hartle–Hawking croît</b> vers le point de retournement alors que <b>Vilenkin décroît</b>. Au-delà de a = 1, HH oscille avec des nœuds (onde stationnaire) et Vilenkin reste lisse (onde sortante).';
+  liveD.dirty=true;
+}
+sD.addEventListener('input',updD);
+$('#dHH').addEventListener('change',function(){D.hh=this.checked;liveD.dirty=true});
+$('#dT').addEventListener('change',function(){D.t=this.checked;liveD.dirty=true});
+var cvD=$('#cvD');
+var liveD=register(cvD,function(){
+  if(!liveD.dirty||!D.cur)return;liveD.dirty=false;
+  var f=fit(cvD),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:48,t:12,r:w-14,b:h-44};
+  var ymax=0,i,n=D.cur.t.v.length;
+  for(i=0;i<n;i+=4){var vt=Math.log10(D.cur.t.v[i]/D.cur.t.ref),vh=Math.log10(D.cur.hh.v[i]/D.cur.hh.ref);if(D.t&&vt>ymax)ymax=vt;if(D.hh&&vh>ymax)ymax=vh}
+  ymax=Math.max(1,Math.ceil(ymax+.3));var ymin=-3;
+  var g=frame(ctx,B,[0,XMAX],[ymin,ymax],[0,.5,1,1.5,2],niceTicks(ymin,ymax,6),'facteur d\'échelle a (unités de 1/H)','log₁₀ |Ψ|² (normalisé)');
+  ctx.fillStyle='rgba(255,122,152,.09)';ctx.fillRect(g.X(0),B.t,g.X(1)-g.X(0),B.b-B.t);
+  ctx.strokeStyle=C.line2;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(g.X(1),B.t);ctx.lineTo(g.X(1),B.b);ctx.stroke();ctx.setLineDash([]);
+  label(ctx,'barrière (euclidien)',g.X(.5),B.t+12,C.rose,'center');
+  label(ctx,'lorentzien',g.X(1.6),B.t+12,C.blue,'center');
+  label(ctx,'a = 1/H',g.X(1)+6,B.b-12,C.mute);
+  function curve(arr,ref,col){
+    ctx.strokeStyle=col;ctx.lineWidth=2.2;ctx.beginPath();var first=true;
+    for(var k=0;k<arr.length;k+=2){var v=Math.log10(Math.max(1e-30,arr[k]/ref));v=Math.max(v,ymin);var x=g.X(k*HS),y=g.Y(v);if(first){ctx.moveTo(x,y);first=false}else ctx.lineTo(x,y)}ctx.stroke();
+  }
+  ctx.save();ctx.beginPath();ctx.rect(B.l,B.t,B.r-B.l,B.b-B.t);ctx.clip();
+  if(D.hh)curve(D.cur.hh.v,D.cur.hh.ref,C.rose);
+  if(D.t)curve(D.cur.t.v,D.cur.t.ref,C.blue);
+  ctx.restore();
+  var ly=B.b-30;
+  ctx.lineWidth=2.2;ctx.strokeStyle=C.rose;ctx.beginPath();ctx.moveTo(B.r-150,ly-16);ctx.lineTo(B.r-130,ly-16);ctx.stroke();label(ctx,'Hartle–Hawking',B.r-124,ly-16,C.text);
+  ctx.strokeStyle=C.blue;ctx.beginPath();ctx.moveTo(B.r-150,ly);ctx.lineTo(B.r-130,ly);ctx.stroke();label(ctx,'Vilenkin',B.r-124,ly,C.text);
+});
+updD();
+
+/* =====================================================
+   §5 LE PASSÉ DÉPEND DE LA QUESTION
+   ===================================================== */
+var cvE=$('#cvE'),SE=40,NPE=900,pr2=rng(2024);
+function gaussE(){return Math.sqrt(-2*Math.log(1-pr2()))*Math.cos(TAU*pr2())}
+var paths=[];
+(function(){for(var p=0;p<NPE;p++){var a=new Float32Array(SE+1),x=0;for(var q=1;q<=SE;q++){x+=gaussE()*.085;a[q]=x}paths.push(a)}})();
+var past={a:.35,w:.3,midOn:false,b:-.4,featured:-1,ok:[]};
+var pA=$('#pastA'),pW=$('#pastW'),pB=$('#pastB'),pM=$('#pastMidOn');
+function compat(){
+  var hw=past.w/2,ok=[];
+  for(var i=0;i<NPE;i++){var p=paths[i];if(Math.abs(p[SE]-past.a)>hw)continue;if(past.midOn&&Math.abs(p[SE/2]-past.b)>hw)continue;ok.push(i)}
+  past.ok=ok;if(past.featured>=0&&ok.indexOf(past.featured)<0)past.featured=-1;
+}
+function updE(){
+  past.a=parseFloat(pA.value);past.w=parseFloat(pW.value);past.b=parseFloat(pB.value);past.midOn=pM.checked;pB.disabled=!past.midOn;
+  $('#pastAv').textContent=fr(past.a,2);$('#pastWv').textContent=fr(past.w,2);$('#pastBv').textContent=fr(past.b,2);
+  compat();var n=past.ok.length;
+  $('#roE').innerHTML=[['Histoires retenues',n+' / '+NPE],['Part',fr(n/NPE*100,1)+' %'],['Observations',past.midOn?'2':'1']].map(function(i){return '<div><div class="k">'+i[0]+'</div><div class="v">'+i[1]+'</div></div>'}).join('');
+  $('#msgE').innerHTML=n?'Le même faisceau, une autre question : <b>'+(past.midOn?'deux observations restreignent davantage le passé.':'une observation suffit déjà à écarter la majorité des histoires.')+'</b>':'<b class="bad">Aucune histoire compatible.</b> Élargis la précision ou rapproche les fenêtres.';
+  liveE.dirty=true;
+}
+[pA,pW,pB,pM].forEach(function(el){el.addEventListener('input',updE)});
+$('#pastPick').addEventListener('click',function(){if(!past.ok.length)return;past.featured=past.ok[Math.floor(Math.random()*past.ok.length)];liveE.dirty=true});
+var liveE=register(cvE,function(){
+  if(!liveE.dirty)return;liveE.dirty=false;
+  var f=fit(cvE),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:34,t:40,r:w-14,b:h-40},XR=1.3;
+  var g=frame(ctx,B,[-XR,XR],[0,SE],[],[],'état de l\'univers (une coordonnée)','temps');
+  function X(v){return g.X(v)}function Y(i){return g.Y(i)}
+  var okSet={},i,k;past.ok.forEach(function(j){okSet[j]=1});
+  ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.save();ctx.beginPath();ctx.rect(B.l,B.t,B.r-B.l,B.b-B.t);ctx.clip();
+  ctx.strokeStyle=C.mute;ctx.lineWidth=1;ctx.globalAlpha=.10;
+  for(i=0;i<NPE;i++){if(okSet[i])continue;var p=paths[i];ctx.beginPath();ctx.moveTo(X(p[0]),Y(0));for(k=1;k<=SE;k++)ctx.lineTo(X(p[k]),Y(k));ctx.stroke()}
+  ctx.strokeStyle=C.rose;ctx.lineWidth=1.4;ctx.globalAlpha=.42;
+  past.ok.forEach(function(j){var p=paths[j];ctx.beginPath();ctx.moveTo(X(p[0]),Y(0));for(var k2=1;k2<=SE;k2++)ctx.lineTo(X(p[k2]),Y(k2));ctx.stroke()});
+  ctx.globalAlpha=1;
+  if(past.featured>=0){var q=paths[past.featured];ctx.strokeStyle=C.amber;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(q[0]),Y(0));for(k=1;k<=SE;k++)ctx.lineTo(X(q[k]),Y(k));ctx.stroke()}
+  ctx.restore();
+  function win(c,idx,txt){
+    var x0=X(c-past.w/2),x1=X(c+past.w/2),y=Y(idx);
+    ctx.strokeStyle=C.text;ctx.lineWidth=2;ctx.beginPath();
+    ctx.moveTo(x0+6,y-10);ctx.lineTo(x0,y-10);ctx.lineTo(x0,y+10);ctx.lineTo(x0+6,y+10);
+    ctx.moveTo(x1-6,y-10);ctx.lineTo(x1,y-10);ctx.lineTo(x1,y+10);ctx.lineTo(x1-6,y+10);ctx.stroke();
+    label(ctx,txt,clamp((x0+x1)/2,B.l+70,B.r-70),y-22,C.text,'center');
+  }
+  win(past.a,SE,'observation d\'aujourd\'hui');
+  if(past.midOn)win(past.b,SE/2,'observation à mi-parcours');
+  label(ctx,'origine commune : le bol sans bord',B.l+8,B.b-12,C.mute);
+});
+updE();
+
+/* =====================================================
+   §3 INFLATION ÉTERNELLE
+   ===================================================== */
+var cvF=$('#cvF'),fP=$('#fP'),fM=$('#fM'),TMAXF=120,Fres=null;
+function simEternal(phi0,m){
+  var W=2500,dt=.2,steps=Math.round(TMAXF/dt),r=rng(5),ends=new Float32Array(W),sq=Math.sqrt(dt),k=m/(2*Math.PI*Math.sqrt(6)),i,j;
+  for(i=0;i<W;i++){
+    var p=phi0,e=Infinity;
+    for(j=0;j<steps;j++){
+      var g=Math.sqrt(-2*Math.log(1-r()))*Math.cos(TAU*r());
+      p+=-2/p*dt+k*p*sq*g;
+      if(p<1.4142){e=(j+1)*dt;break}
+      if(p>1e6){p=1e6}
+    }
+    ends[i]=e;
+  }
+  var ln10=Math.log(10),pts=[],n=0;
+  for(var t=0;t<=TMAXF;t+=1){
+    var alive=0;for(i=0;i<W;i++)if(ends[i]>t)alive++;
+    var f=alive/W;pts.push([t,f>0?(3*t+Math.log(f))/ln10:null,f]);
+  }
+  return {pts:pts,fEnd:pts[pts.length-1][2]};
+}
+function updF(){
+  var p0=parseFloat(fP.value),m=parseFloat(fM.value);
+  $('#fPv').textContent=fr(p0,1);$('#fMv').textContent=fr(m,2);
+  var pe=Math.sqrt(4*Math.PI*Math.sqrt(6)/m);
+  Fres=simEternal(p0,m);
+  var eternal=Fres.fEnd>0,tcl=p0*p0/4;
+  $('#roF').innerHTML=[['φ éternel (seuil)',fr(pe,1)],['Durée classique',fr(tcl,0)+' e-folds'],['Fraction encore en inflation à N = '+TMAXF,eternal?fr(Fres.fEnd*100,1)+' %':'0 %']].map(function(i){return '<div><div class="k">'+i[0]+'</div><div class="v">'+i[1]+'</div></div>'}).join('');
+  $('#msgF').innerHTML=eternal
+    ?'<b class="bad">Inflation éternelle.</b> Des régions remontent la pente plus vite qu\'elles ne la descendent : le volume en inflation continue de croître. Ici φ₀ dépasse le seuil.'
+    :(p0>pe?'<b>Au-dessus du seuil mais sans survivant dans cet échantillon.</b> Le bruit grandit avec φ : rapproche φ₀ du seuil ou augmente m.':'<b class="ok">Inflation finie.</b> La descente domine : toutes les régions finissent par sortir de l\'inflation vers N ≈ '+fr(tcl,0)+'.');
+  liveF.dirty=true;
+}
+[fP,fM].forEach(function(el){el.addEventListener('input',updF)});
+var liveF=register(cvF,function(){
+  if(!liveF.dirty||!Fres)return;liveF.dirty=false;
+  var f=fit(cvF),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:52,t:12,r:w-14,b:h-44},ymax=3*TMAXF/Math.LN10*1.04;
+  var g=frame(ctx,B,[0,TMAXF],[0,ymax],niceTicks(0,TMAXF,6),niceTicks(0,ymax,5),'temps N (e-folds)','log₁₀ volume en inflation');
+  ctx.strokeStyle=C.line2;ctx.lineWidth=1.6;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(g.X(0),g.Y(0));ctx.lineTo(g.X(TMAXF),g.Y(3*TMAXF/Math.LN10));ctx.stroke();ctx.setLineDash([]);
+  label(ctx,'expansion libre e³ᴺ',g.X(TMAXF*.42),g.Y(3*TMAXF*.5/Math.LN10)-12,C.mute);
+  ctx.strokeStyle=C.rose;ctx.lineWidth=2.4;ctx.beginPath();var started=false,last=null;
+  Fres.pts.forEach(function(p){if(p[1]==null)return;var x=g.X(p[0]),y=g.Y(p[1]);if(!started){ctx.moveTo(x,y);started=true}else ctx.lineTo(x,y);last=p});
+  ctx.stroke();
+  if(last&&last[0]<TMAXF){ctx.fillStyle=C.rose;ctx.beginPath();ctx.arc(g.X(last[0]),g.Y(last[1]),5,0,TAU);ctx.fill();label(ctx,'plus aucune région en inflation',g.X(last[0])-10,g.Y(last[1])-14,C.rose,'right')}
+});
+updF();
+
+/* =====================================================
+   §5 LE TROU NOIR EN TEMPS IMAGINAIRE
+   ===================================================== */
+var cvG=$('#cvG'),gK=$('#gK'),kappa=1;
+function rhoBH(r){return Math.sqrt(r*(r-2))+2*Math.log((Math.sqrt(r)+Math.sqrt(r-2))/Math.SQRT2)}
+function drawRev(ctx,cx,cy,sc,tilt,phi0,fn,mer,rings){
+  var ct=Math.cos(tilt),st=Math.sin(tilt),NS=80,i,k;
+  function pj(r,z,phi){var X=r*Math.cos(phi),Z=r*Math.sin(phi),Y2=z*ct-Z*st,Z2=z*st+Z*ct;return [cx+X*sc,cy-Y2*sc,Z2]}
+  function al(d){return(.25+.55*clamp((d+6)/12,0,1)).toFixed(3)}
+  ctx.lineWidth=1;ctx.lineCap='round';
+  for(k=0;k<mer;k++){var phi=phi0+k*TAU/mer,pv=null;
+    for(i=0;i<=NS;i++){var g=fn(i/NS),p=pj(g.r,g.z,phi);if(pv){ctx.strokeStyle='rgba(109,179,255,'+al(p[2])+')';ctx.beginPath();ctx.moveTo(pv[0],pv[1]);ctx.lineTo(p[0],p[1]);ctx.stroke()}pv=p}}
+  for(i=1;i<=rings;i++){var w=Math.pow(i/(rings+1),1.4),g2=fn(w),pp=null;
+    for(k=0;k<=48;k++){var q=pj(g2.r,g2.z,phi0+k*TAU/48);if(pp){ctx.strokeStyle='rgba(109,179,255,'+al(q[2])+')';ctx.beginPath();ctx.moveTo(pp[0],pp[1]);ctx.lineTo(q[0],q[1]);ctx.stroke()}pp=q}}
+}
+function updG(){
+  var k=parseFloat(gK.value);if(Math.abs(k-1)<.012){k=1;gK.value=1}
+  kappa=k;$('#gKv').textContent=fr(k,3);
+  var smooth=k===1;
+  $('#roG').innerHTML=[['T / T<sub>H</sub>',fr(1/k,3)],['Angle autour de la pointe',fr(360*k,0)+'°'],['Pointe',smooth?'lisse':'conique']].map(function(i){return '<div><div class="k">'+i[0]+'</div><div class="v">'+i[1]+'</div></div>'}).join('');
+  $('#msgG').innerHTML=smooth
+    ?'<b class="ok">Pointe lisse.</b> Le cercle se referme comme le pôle d\'une sphère : aucune singularité, et la température est exactement celle de Hawking.'
+    :'<b class="bad">Singularité conique.</b> Il manque ou il y a trop d\'angle autour de la pointe ('+fr(360*k,0)+'° au lieu de 360°). Cette géométrie n\'est pas une solution régulière.';
+  liveG.dirty=true;
+}
+gK.addEventListener('input',updG);
+var liveG=register(cvG,function(){
+  if(!liveG.dirty)return;liveG.dirty=false;
+  var f=fit(cvG),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var zmax=rhoBH(12),sc=Math.min(w/(2*4*1.5*1.1),h/(zmax*1.15));
+  function fn(u){var r=2+10*u*u;return {r:4*kappa*Math.sqrt(Math.max(0,1-2/r)),z:rhoBH(Math.max(2,r))}}
+  drawRev(ctx,w/2,h*.93,sc,.5,.4,fn,24,22);
+  var tip=h*.93;ctx.fillStyle=kappa===1?C.blue:C.rose;ctx.beginPath();ctx.arc(w/2,tip,5,0,TAU);ctx.fill();
+  label(ctx,'horizon (pointe)',w/2+12,tip-2,kappa===1?C.blue:C.rose);
+});
+updG();
+
+})();
+</script>
+</body>
+</html>
