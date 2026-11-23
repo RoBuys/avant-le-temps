@@ -73,6 +73,8 @@ section.sec{padding:72px 0;border-top:1px solid var(--line)}
 .guide div{padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--panel);font-size:14px;line-height:1.5;color:var(--mute)}
 .guide b{display:block;color:var(--text);font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 @media(max-width:760px){.guide{grid-template-columns:minmax(0,1fr)}}
+.lex{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 48px;margin:0}@media(max-width:760px){.lex{grid-template-columns:minmax(0,1fr)}}
+.lex>div{break-inside:avoid}
 .lex dt{font:500 13px var(--f-mono);color:var(--amber);margin-top:14px}.lex dd{margin:3px 0 0;color:var(--mute);font-size:15px;line-height:1.55;max-width:70ch}
 .text{max-width:62ch}
 .text h3{font:500 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:28px 0 10px}
@@ -392,19 +394,21 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
 
 </main>
 
+<div class="wrap">
 <section class="sec" id="lexique" aria-labelledby="hlex">
   <div class="sec-head"><span class="n">+</span><h2 id="hlex">Lexique</h2></div>
   <dl class="lex">
-    <dt>Facteur d'échelle a(t)</dt><dd>Taille relative de l'univers : toutes les distances sont multipliées par a. Vaut 1 aujourd'hui.</dd>
-    <dt>e-fold</dt><dd>Unité de durée de l'inflation : une expansion d'un facteur e ≈ 2,7.</dd>
-    <dt>Rayon de Hubble</dt><dd>Distance au-delà de laquelle l'expansion éloigne les objets plus vite que la lumière ne peut les rattraper.</dd>
-    <dt>Temps imaginaire</dt><dd>Le temps t multiplié par i. Mathématiquement, le temps devient une direction d'espace, ce qui supprime le bord.</dd>
-    <dt>Géométrie euclidienne</dt><dd>Géométrie où le temps est traité comme une direction d'espace. C'est celle du bol de Hartle–Hawking et du cigare de Hawking.</dd>
-    <dt>Fonction d'onde de l'univers</dt><dd>Objet qui attribue une probabilité à chaque histoire possible de l'univers.</dd>
-    <dt>Condition aux limites</dt><dd>Hypothèse de départ qui sélectionne un état parmi tous ceux qu'autorise l'équation de Wheeler–DeWitt.</dd>
-    <dt>Approche descendante</dt><dd>Méthode de Hawking et Hertog : on conditionne la fonction d'onde à ce qu'on observe, au lieu de partir du passé.</dd>
+    <div><dt>Facteur d'échelle a(t)</dt><dd>Taille relative de l'univers : toutes les distances sont multipliées par a. Vaut 1 aujourd'hui.</dd></div>
+    <div><dt>e-fold</dt><dd>Unité de durée de l'inflation : une expansion d'un facteur e ≈ 2,7.</dd></div>
+    <div><dt>Rayon de Hubble</dt><dd>Distance au-delà de laquelle l'expansion éloigne les objets plus vite que la lumière ne peut les rattraper.</dd></div>
+    <div><dt>Temps imaginaire</dt><dd>Le temps t multiplié par i. Mathématiquement, le temps devient une direction d'espace, ce qui supprime le bord.</dd></div>
+    <div><dt>Géométrie euclidienne</dt><dd>Géométrie où le temps est traité comme une direction d'espace. C'est celle du bol de Hartle–Hawking et du cigare de Hawking.</dd></div>
+    <div><dt>Fonction d'onde de l'univers</dt><dd>Objet qui attribue une probabilité à chaque histoire possible de l'univers.</dd></div>
+    <div><dt>Condition aux limites</dt><dd>Hypothèse de départ qui sélectionne un état parmi tous ceux qu'autorise l'équation de Wheeler–DeWitt.</dd></div>
+    <div><dt>Approche descendante</dt><dd>Méthode de Hawking et Hertog : on conditionne la fonction d'onde à ce qu'on observe, au lieu de partir du passé.</dd></div>
   </dl>
 </section>
+</div>
 
 <footer><div class="wrap">
   <h3 class="mono mute" style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">Références</h3>
