@@ -38,7 +38,7 @@ p{margin:0 0 16px}
 .bar b{font:500 12px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
 .bar nav{min-width:0}
 .bar nav{display:flex;gap:4px;overflow-x:auto}
-.bar a{font:400 12px var(--f-mono);color:var(--mute);text-decoration:none;padding:6px 10px;border-radius:4px;white-space:nowrap}
+.bar a{font:400 12px var(--f-mono);color:var(--mute);text-decoration:none;padding:6px 8px;border-radius:4px;white-space:nowrap}
 .bar a:hover{color:var(--text);background:var(--panel2)}
 
 /* en-tête */
@@ -76,6 +76,15 @@ section.sec{padding:72px 0;border-top:1px solid var(--line)}
 .lex{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 48px;margin:0}@media(max-width:760px){.lex{grid-template-columns:minmax(0,1fr)}}
 .lex>div{break-inside:avoid}
 .lex dt{font:500 13px var(--f-mono);color:var(--amber);margin-top:14px}.lex dd{margin:3px 0 0;color:var(--mute);font-size:15px;line-height:1.55;max-width:70ch}
+.tl{list-style:none;margin:0;padding:0;columns:2;column-gap:56px}
+.tl li{break-inside:avoid;position:relative;padding:0 0 22px 22px;border-left:1px solid var(--line2);margin-left:6px}
+.tl li::before{content:"";position:absolute;left:-4px;top:8px;width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.tl .y{font:500 13px var(--f-mono);color:var(--amber)}
+.tl .w{display:block;font-weight:600;color:var(--text);margin:1px 0 2px}
+.tl p{margin:0;font-size:15px;line-height:1.5;color:var(--mute)}
+.tl a{font:500 12px var(--f-mono);white-space:nowrap}
+@media(max-width:860px){.tl{columns:1}}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
 .text{max-width:62ch}
 .text h3{font:500 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:28px 0 10px}
 .fig{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px}
@@ -128,7 +137,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
 <div class="bar"><div class="wrap">
   <b>Avant le temps</b>
   <nav aria-label="Sections">
-    <a href="#friedmann">§1 Friedmann</a><a href="#inflation">§2 Horizon</a><a href="#eternelle">§3 Éternelle</a><a href="#sans-bord">§4 Sans bord</a><a href="#trou-noir">§5 Trou noir</a><a href="#wdw">§6 Ψ</a><a href="#passe">§7 Histoires</a><a href="#livre">§8 Le livre</a>
+    <a href="#frise">Frise</a><a href="#friedmann">1 Friedmann</a><a href="#inflation">2 Horizon</a><a href="#grumeaux">3 Grumeaux</a><a href="#eternelle">4 Éternelle</a><a href="#sans-bord">5 Sans bord</a><a href="#trou-noir">6 Trou noir</a><a href="#wdw">7 Ψ</a><a href="#choix-retarde">8 Wheeler</a><a href="#passe">9 Histoires</a><a href="#livre">10 Livre</a>
   </nav>
 </div></div>
 
@@ -138,7 +147,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
   <div>
     <p class="eyebrow">Cosmologie quantique · d'après <i>L'origine du temps</i>, Thomas Hertog</p>
     <h1>Avant<br>le <em>temps</em></h1>
-    <p class="lead">Les équations d'Einstein donnent un début au temps : la singularité du Big Bang. Hartle, Hawking puis Hertog proposent que ce bord n'existe pas. Sept figures calculées en direct montrent d'où vient le problème et comment cette idée le dissout.</p>
+    <p class="lead">Les équations d'Einstein donnent un début au temps : la singularité du Big Bang. Hartle, Hawking puis Hertog proposent que ce bord n'existe pas. Neuf figures calculées en direct montrent d'où vient le problème et comment cette idée le dissout.</p>
     <div class="guide">
       <div><b>1 · Une idée</b>Chaque section commence par un résumé en quelques phrases, sans formule.</div>
       <div><b>2 · Une figure</b>Elle se manipule avec les curseurs. Un encadré explique comment la lire.</div>
@@ -147,11 +156,34 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
     <div class="stats">
       <div class="stat"><div class="v" id="stAge">13,79</div><div class="l">milliards d'années depuis a = 0 (modèle ΛCDM, §1)</div></div>
       <div class="stat"><div class="v" id="stN">≈ 58</div><div class="l">e-folds d'inflation au minimum pour l'horizon (§2)</div></div>
-      <div class="stat"><div class="v">τ = π/2</div><div class="l">pointe lisse de la géométrie sans frontière (§4)</div></div>
+      <div class="stat"><div class="v">τ = π/2</div><div class="l">pointe lisse de la géométrie sans frontière (§5)</div></div>
     </div>
   </div>
   <canvas id="heroCv" role="img" aria-label="Surface de révolution en fil de fer : une calotte sphérique euclidienne reliée sans cassure à un hyperboloïde, la géométrie sans frontière de Hartle et Hawking"></canvas>
 </header>
+
+<!-- frise -->
+<section class="sec" id="frise" aria-labelledby="hfr">
+  <div class="sec-head"><span class="n">0</span><h2 id="hfr">Une histoire d'idées</h2></div>
+  <p class="mute" style="max-width:70ch;margin-bottom:28px">Quinze repères pour situer ce que la page fait manipuler. Les liens renvoient à la section où l'idée se touche du doigt.</p>
+  <ol class="tl">
+    <li><span class="y">1915</span><b class="w">Einstein</b><p>La relativité générale fait de l'espace et du temps une géométrie dynamique : elle peut se courber, s'étirer et avoir un bord. <a href="#friedmann">→ §1</a></p></li>
+    <li><span class="y">1927–1931</span><b class="w">Lemaître</b><p>L'univers est en expansion ; en remontant, il part d'un « atome primitif ». <a href="#friedmann">→ §1</a></p></li>
+    <li><span class="y">1929</span><b class="w">Hubble</b><p>Les galaxies s'éloignent d'autant plus vite qu'elles sont lointaines : l'expansion est observée. <a href="#friedmann">→ §1</a></p></li>
+    <li><span class="y">1964</span><b class="w">Penzias et Wilson</b><p>Découverte, par hasard, du fond diffus cosmologique : la chaleur résiduelle du Big Bang.</p></li>
+    <li><span class="y">1970</span><b class="w">Hawking et Penrose</b><p>Les théorèmes de singularité montrent que, sous des hypothèses générales, la relativité générale impose un début au temps.</p></li>
+    <li><span class="y">1974–1976</span><b class="w">Hawking, Hartle</b><p>Les trous noirs rayonnent. Le calcul par somme sur les chemins fait intervenir le temps imaginaire. <a href="#trou-noir">→ §6</a></p></li>
+    <li><span class="y">1978</span><b class="w">Wheeler</b><p>Il propose l'expérience à choix retardé : on décide de la question après le passage du photon. <a href="#choix-retarde">→ §8</a></p></li>
+    <li><span class="y">1980–1982</span><b class="w">Guth, Linde, Albrecht, Steinhardt</b><p>L'inflation résout le problème de l'horizon et prolonge le temps avant le Big Bang chaud. <a href="#inflation">→ §2</a></p></li>
+    <li><span class="y">1983</span><b class="w">Hartle et Hawking</b><p>L'état sans bord : l'univers n'a pas de premier instant, comme le pôle Sud n'a pas de « plus au sud ». <a href="#sans-bord">→ §5</a></p></li>
+    <li><span class="y">1986</span><b class="w">Linde</b><p>L'inflation éternelle : un processus qui se nourrit de ses propres fluctuations et fabrique des univers-îles. <a href="#eternelle">→ §4</a></p></li>
+    <li><span class="y">1992</span><b class="w">COBE</b><p>Premières mesures des écarts de température du fond diffus, de l'ordre d'un cent-millième. <a href="#grumeaux">→ §3</a></p></li>
+    <li><span class="y">2006</span><b class="w">Hawking et Hertog</b><p>L'approche descendante : on conditionne la fonction d'onde de l'univers à ce que l'on observe. <a href="#passe">→ §9</a></p></li>
+    <li><span class="y">2009–2013</span><b class="w">Planck</b><p>Le satellite dresse la carte la plus fine du fond diffus et mesure n<sub>s</sub> avec une précision de quelques millièmes. <a href="#grumeaux">→ §3</a></p></li>
+    <li><span class="y">2018</span><b class="w">Hawking et Hertog</b><p>Une sortie lisse de l'inflation éternelle, décrite à l'aide d'une dualité holographique. <a href="#wdw">→ §7</a></p></li>
+    <li><span class="y">2023</span><b class="w">Hertog</b><p><i>On the Origin of Time</i>, en français <i>L'origine du temps</i> : le livre dont ce site est tiré.</p></li>
+  </ol>
+</section>
 
 <!-- §1 -->
 <section class="sec" id="friedmann" aria-labelledby="h1s">
@@ -220,8 +252,45 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
 </section>
 
 <!-- §3 -->
+<section class="sec" id="grumeaux" aria-labelledby="h3g">
+  <div class="sec-head"><span class="n">§3</span><h2 id="h3g">Les grumeaux de l'inflation</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>L'inflation n'aplatit pas seulement l'univers : elle amplifie. Des fluctuations quantiques microscopiques, étirées avec l'espace, deviennent des écarts de densité à l'échelle cosmique. Ce sont les grumeaux dont naîtront les galaxies, et les taches chaudes et froides du fond diffus, de l'ordre d'un cent-millième.</p><p><b class="t">Comment lire la figure</b>À gauche, un tirage aléatoire de ces grumeaux : le curseur n<sub>s</sub> règle la part des grandes et des petites taches. À droite, ce que prédisent deux potentiels d'inflation, comparé aux mesures. Faites varier N et regardez quel modèle reste dans la zone permise.</p></div>
+      <p>Chaque échelle d'espace a sa propre amplitude de fluctuation. On la décrit par une loi de puissance :</p>
+      <math display="block"><mrow><msup><mi mathvariant="normal">Δ</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>A</mi><mi>s</mi></msub><msup><mrow><mo>(</mo><mfrac><mi>k</mi><msub><mi>k</mi><mo>∗</mo></msub></mfrac><mo>)</mo></mrow><mrow><msub><mi>n</mi><mi>s</mi></msub><mo>−</mo><mn>1</mn></mrow></msup></mrow></math>
+      <p>Δ² est la variance des fluctuations par intervalle logarithmique d'échelle. Si n<sub>s</sub> = 1, toutes les tailles de grumeaux ont la même amplitude. Pendant l'inflation, H décroît lentement : les grandes échelles sont sorties du rayon de Hubble plus tôt, quand H était un peu plus grand, donc n<sub>s</sub> est légèrement inférieur à 1.</p>
+      <p>Pour un potentiel V(φ), l'indice spectral n<sub>s</sub> et le rapport r des ondes gravitationnelles primordiales aux fluctuations de densité se lisent sur la forme de la pente (ε) et de la courbure (η) :</p>
+      <math display="block"><mrow><msub><mi>n</mi><mi>s</mi></msub><mo>−</mo><mn>1</mn><mo>=</mo><mo>−</mo><mn>6</mn><mi>ε</mi><mo>+</mo><mn>2</mn><mi>η</mi><mo>,</mo><mspace width="1.6em"></mspace><mi>r</mi><mo>=</mo><mn>16</mn><mi>ε</mi></mrow></math>
+      <p>Deux exemples, avec N le nombre d'e-folds restants quand l'échelle observable quitte le rayon de Hubble (N ≈ 50 à 60). Le potentiel quadratique donne n<sub>s</sub> = 1 − 2/N et r = 8/N. Le modèle de Starobinsky donne n<sub>s</sub> ≈ 1 − 2/N et r ≈ 12/N². Les deux prédisent n<sub>s</sub> ≈ 0,967 mais des r très différents.</p>
+      <p>Planck mesure n<sub>s</sub> = 0,9649 ± 0,0042, et BICEP/Keck limite r à moins de 0,036 (95 %). Le potentiel quadratique est donc écarté, Starobinsky reste permis.</p>
+      <p class="keep"><b class="t">À retenir</b>L'inflation laisse une signature mesurable : un spectre presque, mais pas exactement, invariant d'échelle. C'est là que les théories de l'origine rencontrent les données.</p>
+      <details><summary>Détails du calcul</summary>
+        <p>La carte est la somme de 300 ondes planes de direction et de phase aléatoires, dont les nombres d'onde sont répartis uniformément en ln k entre 1 et 30 cycles par cadre. L'amplitude de chaque onde vaut k<sup>(n<sub>s</sub>−1)/2</sup>, ce qui donne la variance par intervalle logarithmique Δ²(k). C'est un champ gaussien schématique en deux dimensions, pas la carte réelle du fond diffus : celle-ci est tracée sur la sphère et contient aussi les oscillations acoustiques du plasma avant la recombinaison. Unités où la masse de Planck réduite vaut 1.</p>
+      </details>
+    </div>
+    <div class="fig">
+      <div class="duo">
+        <canvas id="gmCv1" style="aspect-ratio:1/1" role="img" aria-label="Carte aléatoire de fluctuations de température, plus ou moins granuleuse selon l'indice spectral"></canvas>
+        <canvas id="gmCv2" style="aspect-ratio:1/1" role="img" aria-label="Plan indice spectral – rapport tenseur sur scalaire, avec les prédictions de deux modèles et les limites observées"></canvas>
+      </div>
+      <p class="cap"><b>Fig. 3</b> À gauche, une réalisation du champ de fluctuations (bleu : plus froid, rose : plus chaud). À droite, le plan (n<sub>s</sub>, r) : la bande bleue est la mesure de Planck, la zone rosée est exclue par BICEP/Keck. Les courbes parcourent N de 40 à 70.</p>
+      <div class="ctl">
+        <div class="row"><button class="btn" id="gmP1" type="button">n<sub>s</sub> = 0,965 (Planck)</button><button class="btn" id="gmP2" type="button">n<sub>s</sub> = 1 (invariant d'échelle)</button></div>
+        <div class="ctl two" style="margin:0;padding:0;border:0">
+          <div class="field"><label for="gmS"><span>Indice spectral n<sub>s</sub> (carte)</span><output id="gmSv"></output></label><input id="gmS" type="range" min="0.5" max="1.5" step="0.005" value="0.965"></div>
+          <div class="field"><label for="gmN"><span>e-folds restants N (modèles)</span><output id="gmNv"></output></label><input id="gmN" type="range" min="40" max="70" step="1" value="60"></div>
+        </div>
+        <div class="readout" id="roGM"></div>
+        <p class="msg" id="msgGM" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §4 -->
 <section class="sec" id="eternelle" aria-labelledby="h3e">
-  <div class="sec-head"><span class="n">§3</span><h2 id="h3e">Inflation éternelle</h2></div>
+  <div class="sec-head"><span class="n">§4</span><h2 id="h3e">Inflation éternelle</h2></div>
   <div class="grid">
     <div class="text">
       <div class="kit"><p><b class="t">En bref</b>Imaginez que l'inflation soit un jeu de dés : à chaque pas, le champ glisse vers le bas de la pente, mais le hasard quantique le secoue. Si la secousse l'emporte sur la glissade, certaines régions remontent et continuent à gonfler, plus vite que les autres ne s'arrêtent.</p><p><b class="t">Comment lire la figure</b>La droite pointillée est la croissance libre du volume, e<sup>3N</sup>. La courbe rose est le volume qui est réellement encore en inflation. Si la rose suit la droite jusqu'au bout, une fraction de l'univers ne cesse jamais de gonfler. Essayez de descendre φ₀ sous le seuil affiché : la courbe s'arrête.</p></div>
@@ -238,7 +307,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
     </div>
     <div class="fig">
       <canvas id="cvF" style="aspect-ratio:16/10" role="img" aria-label="Logarithme du volume en inflation en fonction du temps en e-folds"></canvas>
-      <p class="cap"><b>Fig. 3</b> Volume encore en inflation. La droite pointillée est l'expansion libre e<sup>3N</sup>. Sous le seuil, l'inflation finit partout. Au-dessus, une fraction ne finit jamais.</p>
+      <p class="cap"><b>Fig. 4</b> Volume encore en inflation. La droite pointillée est l'expansion libre e<sup>3N</sup>. Sous le seuil, l'inflation finit partout. Au-dessus, une fraction ne finit jamais.</p>
       <div class="ctl">
         <div class="ctl two" style="margin:0;padding:0;border:0">
           <div class="field"><label for="fP"><span>Valeur initiale φ₀</span><output id="fPv"></output></label><input id="fP" type="range" min="3" max="20" step="0.1" value="16"></div>
@@ -253,7 +322,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
 
 <!-- §4 -->
 <section class="sec" id="sans-bord" aria-labelledby="h3s">
-  <div class="sec-head"><span class="n">§4</span><h2 id="h3s">L'absence de frontière</h2></div>
+  <div class="sec-head"><span class="n">§5</span><h2 id="h3s">L'absence de frontière</h2></div>
   <div class="grid">
     <div class="text">
       <div class="kit"><p><b class="t">En bref</b>Pour que le temps n'ait pas de bord, Hartle et Hawking le font pivoter de 90 degrés : il devient une direction d'espace. Le passé se referme alors en une pointe lisse, comme le pôle Sud d'un globe. Demander ce qu'il y a avant le Big Bang revient à demander ce qu'il y a au sud du pôle Sud.</p><p><b class="t">Comment lire la figure</b>À gauche, le chemin suivi dans le plan du temps complexe : la partie rose est le temps imaginaire, la partie bleue le temps réel. À droite, la forme qui en résulte. Faites glisser le curseur du début à la fin : on passe du bol rose, fermé, à l'évasement bleu qui devient notre univers en expansion.</p></div>
@@ -272,7 +341,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
         <canvas id="cvC1" style="aspect-ratio:1/1.1" role="img" aria-label="Plan du temps complexe avec le contour de Hartle et Hawking"></canvas>
         <canvas id="cvC2" style="aspect-ratio:1/1.1" role="img" aria-label="Géométrie correspondante en surface de révolution"></canvas>
       </div>
-      <p class="cap"><b>Fig. 4</b> À gauche, le contour dans le plan complexe de t (H = 1). À droite, la géométrie obtenue : calotte euclidienne (rose) puis hyperboloïde lorentzien (bleu). L'anneau orange est la tranche courante.</p>
+      <p class="cap"><b>Fig. 5</b> À gauche, le contour dans le plan complexe de t (H = 1). À droite, la géométrie obtenue : calotte euclidienne (rose) puis hyperboloïde lorentzien (bleu). L'anneau orange est la tranche courante.</p>
       <div class="ctl">
         <div class="field"><label for="cS"><span>Position sur le contour</span><output id="cSv"></output></label><input id="cS" type="range" min="0" max="1" step="0.002" value="0.5"></div>
         <div class="readout" id="roC"></div>
@@ -284,7 +353,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
 
 <!-- §5 -->
 <section class="sec" id="trou-noir" aria-labelledby="h5c">
-  <div class="sec-head"><span class="n">§5</span><h2 id="h5c">Le trou noir en temps imaginaire</h2></div>
+  <div class="sec-head"><span class="n">§6</span><h2 id="h5c">Le trou noir en temps imaginaire</h2></div>
   <div class="grid">
     <div class="text">
       <div class="kit"><p><b class="t">En bref</b>Hawking a appliqué la même astuce aux trous noirs. En temps imaginaire, la singularité disparaît et la géométrie prend la forme d'un cigare dont la pointe est l'horizon. Pour que cette pointe soit lisse, le temps imaginaire doit se refermer sur lui-même avec une période précise.</p><p><b class="t">Comment lire la figure</b>La pointe du bas est l'horizon. Chaque cercle représente le temps imaginaire, qui boucle sur lui-même. Avec β/β<sub>H</sub> = 1, la pointe est lisse. Sinon c'est un cône, comme la pointe d'un chapeau de papier, ce qui est une singularité.</p></div>
@@ -301,7 +370,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
     </div>
     <div class="fig">
       <canvas id="cvG" style="aspect-ratio:1/1;max-width:560px;margin:0 auto" role="img" aria-label="Surface de révolution en forme de cigare, pointe lisse ou conique selon la période du temps imaginaire"></canvas>
-      <p class="cap"><b>Fig. 5</b> Géométrie euclidienne d'un trou noir (M = 1). L'axe vertical est la distance propre à l'horizon ; les cercles figurent le temps imaginaire.</p>
+      <p class="cap"><b>Fig. 6</b> Géométrie euclidienne d'un trou noir (M = 1). L'axe vertical est la distance propre à l'horizon ; les cercles figurent le temps imaginaire.</p>
       <div class="ctl">
         <div class="field"><label for="gK"><span>Période β / β<sub>H</sub></span><output id="gKv"></output></label><input id="gK" type="range" min="0.5" max="1.5" step="0.005" value="1"></div>
         <div class="readout" id="roG"></div>
@@ -313,7 +382,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
 
 <!-- §6 -->
 <section class="sec" id="wdw" aria-labelledby="h4s">
-  <div class="sec-head"><span class="n">§6</span><h2 id="h4s">La fonction d'onde de l'univers</h2></div>
+  <div class="sec-head"><span class="n">§7</span><h2 id="h4s">La fonction d'onde de l'univers</h2></div>
   <div class="grid">
     <div class="text">
       <div class="kit"><p><b class="t">En bref</b>Si l'univers entier est un système quantique, il a une fonction d'onde Ψ. Dans ce modèle simplifié, elle ne dépend que de la taille a de l'univers. Là où Ψ est exponentielle, c'est une région classiquement interdite, comme une barrière d'effet tunnel.</p><p><b class="t">Comment lire la figure</b>Le graphe montre log|Ψ|² en fonction de a. La zone rosée est la barrière. La courbe de Hartle–Hawking monte à travers la barrière, celle de Vilenkin descend. Au-delà, les deux oscillent : un univers classique en expansion. Faites varier ε et basculez les deux cases.</p></div>
@@ -323,7 +392,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
       <p>Pour a &lt; 1/H, U est positif : région euclidienne, Ψ est exponentielle (une barrière). Pour a &gt; 1/H, Ψ oscille : un univers classique en expansion émerge. La condition aux limites choisit l'état.</p>
       <p><b>Hartle–Hawking :</b> Ψ est régulière en a = 0 (Ψ′(0) = 0). Elle est réelle, croît sous la barrière et devient une onde stationnaire, avec des nœuds.</p>
       <p><b>Vilenkin (tunnel) :</b> Ψ est purement sortante à grand a. Sous la barrière, elle décroît quand a augmente, et son module n'a pas de nœuds.</p>
-      <p>Les deux décrivent le même univers classique au-delà de a = 1/H, mais pondèrent la barrière à l'inverse. Hertog rappelle (chapitre 4) un défaut de la version initiale de l'état sans bord : calculée « de bas en haut », elle favorise la plus petite poussée d'inflation possible. L'approche descendante du chapitre 6 corrige cela en conditionnant la fonction d'onde à ce qu'on observe, ce qui redistribue le poids vers les univers fortement inflationnistes (§7).</p>
+      <p>Les deux décrivent le même univers classique au-delà de a = 1/H, mais pondèrent la barrière à l'inverse. Hertog rappelle (chapitre 4) un défaut de la version initiale de l'état sans bord : calculée « de bas en haut », elle favorise la plus petite poussée d'inflation possible. L'approche descendante du chapitre 6 corrige cela en conditionnant la fonction d'onde à ce qu'on observe, ce qui redistribue le poids vers les univers fortement inflationnistes (§9).</p>
       <p>Hawking et Hertog (2018) étudient l'état sans frontière pour la sortie de l'inflation éternelle, avec une description duale holographique, et y voient une transition vers un univers classique lisse.</p>
       <p class="keep"><b class="t">À retenir</b>Choisir la condition aux limites de Ψ, c'est choisir une théorie de l'origine. Hartle–Hawking et Vilenkin décrivent le même univers classique, mais ne donnent pas le même poids aux différentes histoires.</p>
       <details><summary>Détails numériques</summary>
@@ -332,7 +401,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
     </div>
     <div class="fig">
       <canvas id="cvD" style="aspect-ratio:16/10" role="img" aria-label="Logarithme du carré de la fonction d'onde en fonction du facteur d'échelle pour les états de Hartle-Hawking et de Vilenkin"></canvas>
-      <p class="cap"><b>Fig. 6</b> log₁₀|Ψ(a)|² normalisé. Zone rosée : sous la barrière (a &lt; 1/H).</p>
+      <p class="cap"><b>Fig. 7</b> log₁₀|Ψ(a)|² normalisé. Zone rosée : sous la barrière (a &lt; 1/H).</p>
       <div class="ctl">
         <div class="field"><label for="dE"><span>ε (ħ effectif)</span><output id="dEv"></output></label><input id="dE" type="range" min="0.08" max="0.6" step="0.005" value="0.2"></div>
         <div class="row">
@@ -346,9 +415,47 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
   </div>
 </section>
 
-<!-- §5 -->
+<!-- §8 -->
+<section class="sec" id="choix-retarde" aria-labelledby="h8w">
+  <div class="sec-head"><span class="n">§8</span><h2 id="h8w">Le choix retardé de Wheeler</h2></div>
+  <div class="grid">
+    <div class="text">
+      <div class="kit"><p><b class="t">En bref</b>En mécanique quantique, un photon peut se comporter comme une onde (il interfère) ou comme une particule (il suit un seul chemin), selon la question qu'on lui pose. Wheeler a imaginé de décider de la question après que le photon a traversé le dispositif. Le résultat suit quand même la prédiction : le passé non observé n'a de contenu précis que lorsque la question est posée.</p><p><b class="t">Comment lire la figure</b>À gauche, un interféromètre : le photon passe un premier séparateur, suit deux bras, puis rencontre ou non un second séparateur. À droite, la part de photons qui arrivent en D1 selon la phase φ. Envoyez des photons dans les trois modes, puis changez φ.</p></div>
+      <p>Hertog décrit l'expérience avec les fentes de Young (chapitre 6) ; l'interféromètre de Mach–Zehnder, utilisé ici, en est la version équivalente. Après le premier séparateur, l'état du photon est une superposition des deux bras A et B, avec une phase relative φ :</p>
+      <math display="block"><mrow><mo stretchy="false">|</mo><mi>ψ</mi><mo stretchy="false">⟩</mo><mo>=</mo><mfrac><mn>1</mn><msqrt><mn>2</mn></msqrt></mfrac><mrow><mo>(</mo><mo stretchy="false">|</mo><mi>A</mi><mo stretchy="false">⟩</mo><mo>+</mo><msup><mi>e</mi><mrow><mi>i</mi><mi>φ</mi></mrow></msup><mo stretchy="false">|</mo><mi>B</mi><mo stretchy="false">⟩</mo><mo>)</mo></mrow></mrow></math>
+      <p>Avec le second séparateur, les deux bras se recombinent et interfèrent :</p>
+      <math display="block"><mrow><mi>P</mi><mo stretchy="false">(</mo><msub><mi>D</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><msup><mi>cos</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mfrac><mi>φ</mi><mn>2</mn></mfrac><mo stretchy="false">)</mo><mo>,</mo><mspace width="1.6em"></mspace><mi>P</mi><mo stretchy="false">(</mo><msub><mi>D</mi><mn>2</mn></msub><mo stretchy="false">)</mo><mo>=</mo><msup><mi>sin</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mfrac><mi>φ</mi><mn>2</mn></mfrac><mo stretchy="false">)</mo></mrow></math>
+      <p>Sans lui, chaque détecteur désigne un bras (D1 pour A, D2 pour B) et la répartition est de ½ pour chacun, quelle que soit φ. Wheeler retarde la décision d'insérer ou non ce séparateur jusqu'après le passage du photon par le premier. Les expériences réalisées depuis confirment la prédiction.</p>
+      <p>Aucun signal ne remonte le temps. Le choix ne modifie pas ce que le photon a fait avant : il détermine laquelle des deux questions reçoit une réponse. Hertog en tire l'idée centrale de la cosmologie descendante, appliquée à l'univers entier.</p>
+      <p class="keep"><b class="t">À retenir</b>Ce que l'on peut dire du passé dépend de la question posée aujourd'hui, sans que le passé soit modifié. C'est le même principe que celui du §9, à l'échelle d'un photon.</p>
+      <details><summary>Détails de la simulation</summary>
+        <p>Chaque photon est tiré selon la règle de Born : en D1 avec la probabilité cos²(φ/2) si le séparateur est inséré, ½ sinon. Dans le mode « au hasard », l'insertion est tirée à pile ou face pour chaque photon, indépendamment de φ. La simulation ne démontre rien sur le « passé » du photon : elle affiche les statistiques que prédit la théorie. Les barres d'erreur sont ± un écart-type, √(p(1−p)/n).</p>
+      </details>
+    </div>
+    <div class="fig">
+      <div class="duo">
+        <canvas id="whCv1" style="aspect-ratio:1/1" role="img" aria-label="Schéma d'un interféromètre de Mach-Zehnder avec un second séparateur qui peut être inséré ou retiré"></canvas>
+        <canvas id="whCv2" style="aspect-ratio:1/1" role="img" aria-label="Probabilité de détection en D1 en fonction de la phase, avec et sans second séparateur"></canvas>
+      </div>
+      <p class="cap"><b>Fig. 8</b> Interféromètre à second séparateur retardé (à gauche) et fréquence de détection en D1 (à droite). Courbe bleue : séparateur inséré, cos²(φ/2). Ligne ambre : séparateur retiré, ½. Les points sont les fréquences mesurées.</p>
+      <div class="ctl">
+        <div class="row">
+          <label class="chk"><input type="radio" name="whMode" value="rand" checked> Au hasard, après le 1<sup>er</sup> séparateur</label>
+          <label class="chk"><input type="radio" name="whMode" value="in"> Toujours inséré</label>
+          <label class="chk"><input type="radio" name="whMode" value="out"> Toujours retiré</label>
+        </div>
+        <div class="field"><label for="whPhi"><span>Phase φ entre les deux bras</span><output id="whPhiv"></output></label><input id="whPhi" type="range" min="0" max="6.2832" step="0.01" value="1.2566"></div>
+        <div class="row"><button class="btn" id="whOne" type="button">+ 1 photon</button><button class="btn" id="whMany" type="button">+ 200 photons</button><button class="btn" id="whReset" type="button">Remise à zéro</button></div>
+        <div class="readout" id="roW"></div>
+        <p class="msg" id="msgW" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §9 -->
 <section class="sec" id="passe" aria-labelledby="h5s">
-  <div class="sec-head"><span class="n">§7</span><h2 id="h5s">Le passé dépend de la question</h2></div>
+  <div class="sec-head"><span class="n">§9</span><h2 id="h5s">Le passé dépend de la question</h2></div>
   <div class="grid">
     <div class="text">
       <div class="kit"><p><b class="t">En bref</b>En physique quantique, observer n'est pas seulement lire une valeur : c'est choisir parmi des possibles. Hertog en tire que cela vaut aussi vers le passé : les faits observés aujourd'hui sélectionnent, parmi toutes les histoires possibles, celles qui sont compatibles avec eux.</p><p><b class="t">Comment lire la figure</b>Toutes les lignes partent d'un même point et représentent des histoires possibles. Les fenêtres sont des observations : seules les lignes roses les traversent. Ajoutez une observation à mi-parcours ou réduisez la précision, et regardez le passé retenu se resserrer.</p></div>
@@ -364,7 +471,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
     </div>
     <div class="fig">
       <canvas id="cvE" style="aspect-ratio:16/11" role="img" aria-label="Un faisceau d'histoires partant d'une origine commune. Seules celles qui passent par les fenêtres d'observation sont en rose."></canvas>
-      <p class="cap"><b>Fig. 7</b> Histoires possibles (gris) et histoires compatibles avec l'observation (rose). Déplacer les fenêtres change le passé retenu.</p>
+      <p class="cap"><b>Fig. 9</b> Histoires possibles (gris) et histoires compatibles avec l'observation (rose). Déplacer les fenêtres change le passé retenu.</p>
       <div class="ctl">
         <div class="ctl two" style="margin:0;padding:0;border:0">
           <div class="field"><label for="pastA"><span>Observation d'aujourd'hui</span><output id="pastAv"></output></label><input id="pastA" type="range" min="-1" max="1" step="0.01" value="0.35"></div>
@@ -382,7 +489,7 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
 
 <!-- §6 -->
 <section class="sec" id="livre" aria-labelledby="h6s">
-  <div class="sec-head"><span class="n">§8</span><h2 id="h6s">Ce que le livre ajoute</h2></div>
+  <div class="sec-head"><span class="n">§10</span><h2 id="h6s">Ce que le livre ajoute</h2></div>
   <p class="mute" style="max-width:70ch;margin-bottom:28px">Résumé libre des idées centrales, avec les chapitres de l'édition numérique.</p>
   <div class="notes">
     <div><h3>Un triptyque (ch. 6)</h3><p>La cosmologie quantique de Hawking et Hertog tient trois éléments ensemble : une origine (l'hypothèse sans bord), une évolution (la somme sur toutes les histoires) et l'observation. Ils ne se séparent plus comme dans la physique ordinaire, où lois, conditions aux limites et mesures forment des étapes distinctes.</p></div>
@@ -406,6 +513,10 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
     <div><dt>Fonction d'onde de l'univers</dt><dd>Objet qui attribue une probabilité à chaque histoire possible de l'univers.</dd></div>
     <div><dt>Condition aux limites</dt><dd>Hypothèse de départ qui sélectionne un état parmi tous ceux qu'autorise l'équation de Wheeler–DeWitt.</dd></div>
     <div><dt>Approche descendante</dt><dd>Méthode de Hawking et Hertog : on conditionne la fonction d'onde à ce qu'on observe, au lieu de partir du passé.</dd></div>
+    <div><dt>Fond diffus cosmologique</dt><dd>Lumière émise environ 380 000 ans après le Big Bang, quand l'univers est devenu transparent. Ses écarts de température, d'un cent-millième, sont les graines des galaxies.</dd></div>
+    <div><dt>Indice spectral n<sub>s</sub></dt><dd>Pente de la loi de puissance qui donne l'amplitude des fluctuations selon leur taille. Vaut 1 si toutes les tailles ont la même amplitude ; Planck mesure 0,965.</dd></div>
+    <div><dt>Rapport tenseur/scalaire r</dt><dd>Rapport entre les ondes gravitationnelles primordiales et les fluctuations de densité. Les mesures actuelles donnent r &lt; 0,036.</dd></div>
+    <div><dt>Choix retardé</dt><dd>Expérience où l'on décide de la mesure à faire après le passage de la particule. Elle illustre que le passé quantique dépend de la question posée.</dd></div>
   </dl>
 </section>
 </div>
@@ -418,6 +529,11 @@ footer p{font-size:14px;color:var(--mute);max-width:80ch}
     <li>J. B. Hartle, S. W. Hawking, T. Hertog, « The classical universes of the no-boundary quantum state », <i>Phys. Rev. D</i> 77, 123537 (2008).</li>
     <li>S. W. Hawking, T. Hertog, « A smooth exit from eternal inflation? », <i>JHEP</i> 04 (2018) 147.</li>
     <li>B. S. DeWitt, « Quantum theory of gravity. I », <i>Phys. Rev.</i> 160, 1113 (1967).</li>
+    <li>J. A. Wheeler, « The “past” and the “delayed-choice” double-slit experiment », dans <i>Mathematical Foundations of Quantum Theory</i>, éd. A. R. Marlow, Academic Press (1978), p. 9–48.</li>
+    <li>A. A. Starobinsky, « A new type of isotropic cosmological models without singularity », <i>Phys. Lett. B</i> 91, 99 (1980).</li>
+    <li>S. W. Hawking, T. Hertog, « Populating the landscape: a top-down approach », <i>Phys. Rev. D</i> 73, 123527 (2006).</li>
+    <li>Planck Collaboration, « Planck 2018 results. VI. Cosmological parameters », <i>Astron. Astrophys.</i> 641, A6 (2020).</li>
+    <li>BICEP/Keck Collaboration, « Improved constraints on primordial gravitational waves using Planck, WMAP, and BICEP/Keck observations through the 2018 observing season », <i>Phys. Rev. Lett.</i> 127, 151301 (2021).</li>
     <li>T. Hertog, <i>L'origine du temps</i> (édition originale : <i>On the Origin of Time</i>, 2023).</li>
   </ol>
   <p style="margin-top:20px">Les figures sont des modèles de principe en unités réduites. Elles illustrent les mécanismes, elles ne reproduisent pas les calculs complets des articles.</p>
@@ -886,6 +1002,172 @@ var liveG=register(cvG,function(){
   label(ctx,'horizon (pointe)',w/2+12,tip-2,kappa===1?C.blue:C.rose);
 });
 updG();
+
+/* =====================================================
+   §3 LES GRUMEAUX DE L'INFLATION
+   ===================================================== */
+var gmCv1=$('#gmCv1'),gmCv2=$('#gmCv2'),gmS=$('#gmS'),gmN=$('#gmN');
+var GM_W=300,GM_G=110,gmWaves=[],gmField=new Float32Array(GM_G*GM_G),gmOff=document.createElement('canvas'),gmNs=0.965;
+gmOff.width=gmOff.height=GM_G;
+(function(){
+  var r=rng(20241123),i,j;
+  for(i=0;i<GM_W;i++){
+    var k=Math.pow(30,(i+r())/GM_W),th=TAU*r(),ph=TAU*r(),kx=k*Math.cos(th),ky=k*Math.sin(th);
+    var W={k:k,cx:new Float32Array(GM_G),sx:new Float32Array(GM_G),cy:new Float32Array(GM_G),sy:new Float32Array(GM_G)};
+    for(j=0;j<GM_G;j++){var u=j/GM_G,a=TAU*kx*u+ph,b=TAU*ky*u;W.cx[j]=Math.cos(a);W.sx[j]=Math.sin(a);W.cy[j]=Math.cos(b);W.sy[j]=Math.sin(b)}
+    gmWaves.push(W);
+  }
+})();
+function gmCompute(ns){
+  var F=gmField,n=GM_G,i,j,w;F.fill(0);
+  for(w=0;w<GM_W;w++){
+    var W=gmWaves[w],a=Math.pow(W.k,(ns-1)/2);
+    for(j=0;j<n;j++){var cy=W.cy[j]*a,sy=W.sy[j]*a,o=j*n;for(i=0;i<n;i++)F[o+i]+=W.cx[i]*cy-W.sx[i]*sy}
+  }
+  var m=0,v=0;for(i=0;i<F.length;i++)m+=F[i];m/=F.length;
+  for(i=0;i<F.length;i++){var d=F[i]-m;v+=d*d}
+  var sd=Math.sqrt(v/F.length)||1,cx=gmOff.getContext('2d'),id=cx.createImageData(n,n),px=id.data;
+  for(i=0;i<F.length;i++){
+    var t=clamp((F[i]-m)/sd/2.6,-1,1),q=Math.abs(t),c=t<0?[109,179,255]:[255,122,152],o4=i*4;
+    px[o4]=26+(c[0]-26)*q;px[o4+1]=32+(c[1]-32)*q;px[o4+2]=52+(c[2]-52)*q;px[o4+3]=255;
+  }
+  cx.putImageData(id,0,0);
+}
+function updGM(){
+  var ns=parseFloat(gmS.value),N=parseFloat(gmN.value);gmNs=ns;
+  $('#gmSv').textContent=fr(ns,3);$('#gmNv').textContent=String(N);
+  gmCompute(ns);
+  var nsM=1-2/N,rQ=8/N,rS=12/(N*N);
+  $('#roGM').innerHTML=[["Δ² petite échelle / grande échelle","×"+fr(Math.pow(30,ns-1),2)],["Quadratique : n<sub>s</sub> ; r",fr(nsM,3)+" ; "+fr(rQ,3)],["Starobinsky : n<sub>s</sub> ; r",fr(nsM,3)+" ; "+fr(rS,4)]].map(function(i){return "<div><div class='k'>"+i[0]+"</div><div class='v'>"+i[1]+"</div></div>"}).join("");
+  var a;
+  if(Math.abs(ns-1)<0.0025)a="<b>Spectre invariant d'échelle.</b> Toutes les tailles de taches ont la même amplitude.";
+  else if(ns<1)a="<b>n<sub>s</sub> &lt; 1.</b> Les grandes taches l'emportent sur les petites.";
+  else a="<b>n<sub>s</sub> &gt; 1.</b> Les petites taches l'emportent sur les grandes.";
+  if(Math.abs(ns-0.9649)<=0.0042)a+=" Cette valeur est dans la barre mesurée par Planck (0,9649 ± 0,0042).";
+  var okQ=rQ<0.036,okS=rS<0.036;
+  a+=" À N = "+N+", le potentiel quadratique prédit r ≈ "+fr(rQ,2)+(okQ?", sous la limite observée de 0,036."
+    :", au-dessus de la limite observée de 0,036 : <b class='bad'>il est écarté</b>.")+" Starobinsky prédit r ≈ "+fr(rS,4)+(okS?" : <b class='ok'>compatible</b>.":" : au-dessus de la limite.");
+  $('#msgGM').innerHTML=a;
+  liveGM1.dirty=true;liveGM2.dirty=true;
+}
+gmS.addEventListener('input',updGM);gmN.addEventListener('input',updGM);
+$('#gmP1').addEventListener('click',function(){gmS.value=0.965;updGM()});
+$('#gmP2').addEventListener('click',function(){gmS.value=1;updGM()});
+var liveGM1=register(gmCv1,function(){
+  if(!liveGM1.dirty)return;liveGM1.dirty=false;
+  var f=fit(gmCv1),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.drawImage(gmOff,0,0,w,h);
+  ctx.strokeStyle=C.line2;ctx.lineWidth=1;ctx.strokeRect(.5,.5,w-1,h-1);
+  var lw=Math.min(190,w*.62),lx=12,ly=h-20;
+  ctx.fillStyle="rgba(8,10,17,.72)";ctx.fillRect(lx-6,ly-26,lw+12,40);
+  var g=ctx.createLinearGradient(lx,0,lx+lw,0);g.addColorStop(0,"rgb(109,179,255)");g.addColorStop(.5,"rgb(26,32,52)");g.addColorStop(1,"rgb(255,122,152)");
+  ctx.fillStyle=g;ctx.fillRect(lx,ly,lw,7);
+  label(ctx,"plus froid",lx,ly-10,C.text);label(ctx,"plus chaud",lx+lw,ly-10,C.text,"right");
+  ctx.fillStyle="rgba(8,10,17,.72)";ctx.fillRect(8,8,112,22);label(ctx,"n_s = "+fr(gmNs,3),14,19,C.text);
+});
+var liveGM2=register(gmCv2,function(){
+  if(!liveGM2.dirty)return;liveGM2.dirty=false;
+  var f=fit(gmCv2),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:56,t:14,r:w-14,b:h-46},N=parseFloat(gmN.value),L=Math.log10;
+  var g=frame(ctx,B,[0.94,0.98],[-3.2,0],[0.94,0.95,0.96,0.97,0.98],[-3,-2,-1,0],"indice spectral n_s","r (échelle logarithmique)",function(v){return fr(v,2)},function(v){return ["0,001","0,01","0,1","1"][v+3]});
+  ctx.fillStyle="rgba(109,179,255,.16)";ctx.fillRect(g.X(0.9649-0.0042),B.t,g.X(0.9649+0.0042)-g.X(0.9649-0.0042),B.b-B.t);
+  ctx.strokeStyle=C.blue;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(g.X(0.9649),B.t);ctx.lineTo(g.X(0.9649),B.b);ctx.stroke();
+  var yl=g.Y(L(0.036));ctx.fillStyle="rgba(255,122,152,.10)";ctx.fillRect(B.l,B.t,B.r-B.l,yl-B.t);
+  ctx.strokeStyle=C.rose;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(B.l,yl);ctx.lineTo(B.r,yl);ctx.stroke();ctx.setLineDash([]);
+  label(ctx,"exclu (r > 0,036)",B.l+8,yl-10,C.rose);label(ctx,"Planck",g.X(0.9649)+6,B.t+12,C.blue);
+  function curve(fn,col){ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath();for(var n=40;n<=70;n++){var p=fn(n),x=g.X(p[0]),y=g.Y(L(p[1]));if(n===40)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.stroke()}
+  var fq=function(n){return [1-2/n,8/n]},fs=function(n){return [1-2/n,12/(n*n)]};
+  curve(fq,C.amber);curve(fs,C.text);
+  var pq=fq(N),ps=fs(N);
+  [[pq,C.amber,"quadratique φ²",-14],[ps,C.text,"Starobinsky",18]].forEach(function(o){
+    var x=g.X(o[0][0]),y=g.Y(L(o[0][1]));ctx.fillStyle=o[1];ctx.beginPath();ctx.arc(x,y,5,0,TAU);ctx.fill();
+    label(ctx,o[2],x-10,y+o[3],o[1],"right");
+  });
+  label(ctx,"N = 40 → 70",B.r-6,B.b-10,C.mute,"right");
+});
+updGM();
+
+/* =====================================================
+   §8 LE CHOIX RETARDÉ DE WHEELER
+   ===================================================== */
+var whPhi=$('#whPhi'),whCv1=$('#whCv1'),whCv2=$('#whCv2'),whR=rng(99173);
+var wh={n:{inn:[0,0],out:[0,0]},last:null,flash:0,fading:false};
+function whMode(){return document.querySelector("input[name=whMode]:checked").value}
+function whSend(k){
+  var phi=parseFloat(whPhi.value),mode=whMode(),pD=Math.pow(Math.cos(phi/2),2),i;
+  for(i=0;i<k;i++){
+    var ins=mode==="in"?true:(mode==="out"?false:whR()<.5),d1=whR()<(ins?pD:.5);
+    wh.n[ins?"inn":"out"][d1?0:1]++;wh.last={ins:ins,d1:d1};
+  }
+  wh.flash=performance.now()+600;updW();
+}
+function whPct(a){var n=a[0]+a[1];return n?"D1 "+fr(100*a[0]/n,0)+" % · D2 "+fr(100*a[1]/n,0)+" %  (n = "+n+")":"aucun photon"}
+function updW(){
+  var phi=parseFloat(whPhi.value),mode=whMode(),pD=Math.pow(Math.cos(phi/2),2);
+  $("#whPhiv").textContent=fr(phi/Math.PI,2)+" π";
+  $("#roW").innerHTML=[["Séparateur inséré",whPct(wh.n.inn)],["Séparateur retiré",whPct(wh.n.out)],["Théorie : P(D1)","inséré "+fr(100*pD,0)+" % · retiré 50 %"]].map(function(i){return "<div><div class='k'>"+i[0]+"</div><div class='v'>"+i[1]+"</div></div>"}).join("");
+  var t;
+  if(mode==="in")t="<b>Interférence.</b> D1 reçoit cos²(φ/2) des photons : le résultat dépend de la phase entre les deux bras, comme si le photon avait emprunté les deux.";
+  else if(mode==="out")t="<b>Chemin connu.</b> Chaque détecteur désigne un bras et la répartition reste de 50 % quelle que soit φ : le photon se comporte comme une particule.";
+  else t="<b>Choix retardé.</b> Le second séparateur est inséré ou retiré au hasard, après le premier. Les photons où il est inséré dessinent l'interférence, les autres la répartition 50/50.";
+  $("#msgW").innerHTML=t+" Aucun signal ne remonte le temps : le choix détermine quelle question reçoit une réponse.";
+  liveW1.dirty=true;liveW2.dirty=true;
+}
+whPhi.addEventListener("input",function(){wh.n={inn:[0,0],out:[0,0]};wh.last=null;whSend(120)});
+Array.prototype.forEach.call(document.querySelectorAll("input[name=whMode]"),function(r){r.addEventListener("change",updW)});
+$("#whOne").addEventListener("click",function(){whSend(1)});
+$("#whMany").addEventListener("click",function(){whSend(200)});
+$("#whReset").addEventListener("click",function(){wh.n={inn:[0,0],out:[0,0]};wh.last=null;updW()});
+var liveW1=register(whCv1,function(){
+  var now=performance.now(),a=reduce?(wh.last?1:0):clamp((wh.flash-now)/600,0,1);
+  if(!liveW1.dirty&&a<=0&&!wh.fading)return;
+  wh.fading=a>0;liveW1.dirty=false;
+  var f=fit(whCv1),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var pad=36,X=function(u){return 14+u*(w-28)},Y=function(v){return pad+v*(h-2*pad)};
+  var P={S:[.02,.72],B1:[.24,.72],MA:[.24,.26],MB:[.70,.72],B2:[.70,.26],D1:[.94,.26],D2:[.70,.02]};
+  var mode=whMode(),ins=mode==="in"?true:(mode==="out"?false:(wh.last?wh.last.ins:true));
+  function seg(p,q,col,lw,al){ctx.globalAlpha=al==null?1:al;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(X(P[p][0]),Y(P[p][1]));ctx.lineTo(X(P[q][0]),Y(P[q][1]));ctx.stroke();ctx.globalAlpha=1}
+  [["S","B1"],["B1","MA"],["MA","B2"],["B1","MB"],["MB","B2"],["B2","D1"],["B2","D2"]].forEach(function(e){seg(e[0],e[1],C.line2,2)});
+  if(a>0&&wh.last){
+    var L=wh.last,col=L.ins?C.blue:C.amber,lw=3.5;
+    seg("S","B1",col,lw,a);
+    if(L.ins){seg("B1","MA",col,lw,a);seg("MA","B2",col,lw,a);seg("B1","MB",col,lw,a);seg("MB","B2",col,lw,a);seg("B2",L.d1?"D1":"D2",col,lw,a)}
+    else if(L.d1){seg("B1","MA",col,lw,a);seg("MA","B2",col,lw,a);seg("B2","D1",col,lw,a)}
+    else{seg("B1","MB",col,lw,a);seg("MB","B2",col,lw,a);seg("B2","D2",col,lw,a)}
+  }
+  function tick(p,len,col,dash){var x=X(P[p][0]),y=Y(P[p][1]);ctx.strokeStyle=col;ctx.lineWidth=3;ctx.setLineDash(dash||[]);ctx.beginPath();ctx.moveTo(x-len,y+len);ctx.lineTo(x+len,y-len);ctx.stroke();ctx.setLineDash([])}
+  tick("MA",9,C.mute);tick("MB",9,C.mute);tick("B1",10,C.text);
+  if(ins)tick("B2",10,C.text);else{ctx.globalAlpha=.55;tick("B2",10,C.mute,[3,3]);ctx.globalAlpha=1}
+  ctx.fillStyle=C.amber;ctx.fillRect(X(.47)-3,Y(.72)-8,6,16);
+  [["D1",a>0&&wh.last&&wh.last.d1],["D2",a>0&&wh.last&&!wh.last.d1]].forEach(function(d){
+    var x=X(P[d[0]][0]),y=Y(P[d[0]][1]);ctx.beginPath();ctx.arc(x,y,9,0,TAU);
+    if(d[1]){ctx.fillStyle=wh.last.ins?C.blue:C.amber;ctx.globalAlpha=a;ctx.fill();ctx.globalAlpha=1}
+    ctx.strokeStyle=C.text;ctx.lineWidth=1.5;ctx.stroke();
+  });
+  label(ctx,"source",X(.02),Y(.72)-16,C.mute);label(ctx,"séparateur 1",X(.24),Y(.72)+22,C.mute,"center");
+  label(ctx,"miroir",X(.24)-8,Y(.26)-16,C.mute,"center");label(ctx,"miroir",X(.70),Y(.72)+22,C.mute,"center");label(ctx,"φ",X(.47),Y(.72)+24,C.amber,"center");
+  label(ctx,"séparateur 2",X(.67),Y(.26)+20,C.mute,"right");label(ctx,ins?"inséré":"retiré",X(.67),Y(.26)+36,ins?C.text:C.mute,"right");
+  label(ctx,"D1",X(.94),Y(.26)-18,C.text,"center");label(ctx,"D2",X(.70)+16,Y(.02),C.text);
+});
+var liveW2=register(whCv2,function(){
+  if(!liveW2.dirty)return;liveW2.dirty=false;
+  var f=fit(whCv2),ctx=f.ctx,w=f.w,h=f.h;ctx.clearRect(0,0,w,h);
+  var B={l:48,t:14,r:w-14,b:h-46},phi=parseFloat(whPhi.value);
+  var g=frame(ctx,B,[0,TAU],[0,1],[0,Math.PI,TAU],[0,.25,.5,.75,1],"phase φ","fréquence en D1",function(v){return v===0?"0":(v<4?"π":"2π")},function(v){return fr(v,2)});
+  ctx.strokeStyle=C.blue;ctx.lineWidth=2.2;ctx.beginPath();
+  for(var i=0;i<=120;i++){var p=i/120*TAU,x=g.X(p),y=g.Y(Math.pow(Math.cos(p/2),2));if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}
+  ctx.stroke();
+  ctx.strokeStyle=C.amber;ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(B.l,g.Y(.5));ctx.lineTo(B.r,g.Y(.5));ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle=C.line2;ctx.beginPath();ctx.moveTo(g.X(phi),B.t);ctx.lineTo(g.X(phi),B.b);ctx.stroke();
+  function pt(a,col,sq){
+    var n=a[0]+a[1];if(!n)return;var p=a[0]/n,e=Math.sqrt(p*(1-p)/n),x=g.X(phi);
+    ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,g.Y(Math.min(1,p+e)));ctx.lineTo(x,g.Y(Math.max(0,p-e)));ctx.stroke();
+    ctx.fillStyle=col;ctx.beginPath();if(sq)ctx.rect(x-5,g.Y(p)-5,10,10);else ctx.arc(x,g.Y(p),5,0,TAU);ctx.fill();
+  }
+  pt(wh.n.inn,C.blue,false);pt(wh.n.out,C.amber,true);
+  label(ctx,"inséré : cos²(φ/2)",(B.l+B.r)/2,B.t+14,C.blue,"center");label(ctx,"retiré : ½",(B.l+B.r)/2,B.t+30,C.amber,"center");
+});
+whSend(160);
 
 })();
 </script>
